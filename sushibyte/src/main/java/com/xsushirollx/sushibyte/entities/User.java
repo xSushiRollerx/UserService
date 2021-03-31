@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user")
@@ -14,12 +16,16 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Column(name = "first_name")
+	@NotNull
 	private String firstName;
 	@Column(name = "last_name")
+	@NotNull
 	private String lastName;
 	@Column(name = "phone")
+	@NotNull
 	private String phone;
 	@Column(name = "email")
+	@NotNull
 	private String email;
 
 	public String getUsername() {
@@ -34,6 +40,16 @@ public class User {
 	private String username;
 	@Column(name = "password")
 	private String password;
+	@Column(name = "salt")
+	private String salt;
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
 	@Column(name = "is_active")
 	private boolean isActive;
 

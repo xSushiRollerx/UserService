@@ -111,5 +111,22 @@ class UserDaoTest {
 		assertEquals(test1.getUsername(),"test1");
 		assertEquals(test1.getPassword(),"password");
 	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	void findByPhoneTest() {
+		User test1;
+		test1 = u1.save(new User("first", "last", "phone", "test1", "test1","password"));
+		int id = test1.getId();
+		test1 = u1.findByPhone("phone");
+		assertNotNull(test1);
+		assertEquals(test1.getId(),id);
+		assertEquals(test1.getFirstName(),"first");
+		assertEquals(test1.getLastName(),"last");
+		assertEquals(test1.getEmail(),"test1");
+		assertEquals(test1.getUsername(),"test1");
+		assertEquals(test1.getPassword(),"password");
+	}
 
 }
