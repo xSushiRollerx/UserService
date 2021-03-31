@@ -16,6 +16,12 @@ import com.xsushirollx.sushibyte.repositories.CustomerDAO;
 import com.xsushirollx.sushibyte.repositories.UserDAO;
 import com.xsushirollx.sushibyte.utils.PasswordUtils;
 
+import net.bytebuddy.utility.RandomString;
+
+/**
+ * @author dyltr
+ * references: https://www.codejava.net/frameworks/spring-boot/email-verification-example
+ */
 @Service
 public class UserService {
 	@Autowired
@@ -29,7 +35,7 @@ public class UserService {
 	 * @return true if user has successfully been saved
 	 */
 	@Transactional
-	public boolean registerOnValidation(User user) {
+	public boolean registerOnValidation(User user, String siteUrl) {
 		if(!validatePassword(user.getPassword())) {
 			return false;
 		}
@@ -51,15 +57,23 @@ public class UserService {
 		String salt = PasswordUtils.getSalt(30);
 		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword(), salt));
 		user.setSalt(salt);
+		String randomCode = RandomString.make(64);
+		user.setVerificationCode(randomCode);
 		try {
 			//email validated with hibernate
 			User user1 = u1.save(user);
 			c1.save(new Customer(user1.getId()));
+			sendVerificationEmail(user1, siteUrl);
 		}
 		catch(Exception e) {
 			log.debug("Was unable to save user.");
 		}
 		return true;
+	}
+
+	private void sendVerificationEmail(User user, String siteUrl) {
+		//implement java mail api
+		String verifyURL = siteUrl + "/verify?code=" + user.getVerificationCode();
 	}
 
 	public boolean validateEmail(String email) {
@@ -101,6 +115,16 @@ public class UserService {
 		if (password==null||password.length()<6||password.length()>20) {
 			return false;
 		}
+		return true;
+	}
+	
+	public boolean verifyUserEmail(String verificationCode) {
+		User user = u1.findByVericationCode(verificationCode);
+		if (user==null) {
+			return false;
+		}
+		user.setActive(true);
+		u1.save(user);
 		return true;
 	}
 }

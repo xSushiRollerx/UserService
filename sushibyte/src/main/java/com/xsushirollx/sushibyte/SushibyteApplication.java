@@ -12,9 +12,6 @@ public class SushibyteApplication {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SushibyteApplication.class, args);
-		SushibyteApplication m1 = new SushibyteApplication();
-
-		System.out.print(m1.u1.validateName("hello@yahoo1.com"));
 	}
 
 }

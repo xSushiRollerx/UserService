@@ -27,6 +27,23 @@ public class User {
 	@Column(name = "email")
 	@NotNull
 	private String email;
+	@Column(name = "verification_code")
+	private String verificationCode;
+	@Column(name = "username")
+	private String username;
+	@Column(name = "password")
+	private String password;
+	@Column(name = "salt")
+	private String salt;
+	
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
 
 	public String getUsername() {
 		return username;
@@ -35,13 +52,7 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	@Column(name = "username")
-	private String username;
-	@Column(name = "password")
-	private String password;
-	@Column(name = "salt")
-	private String salt;
+	
 	public String getSalt() {
 		return salt;
 	}
