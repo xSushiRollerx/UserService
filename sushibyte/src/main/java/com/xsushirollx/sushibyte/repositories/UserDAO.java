@@ -22,7 +22,7 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	@Query("select u from User u where u.phone=?1")
 	public User findByPhone(String phone);
 	
-	@Query("select u from User u where u.verification_code=?1")
+	@Query("select u from User u where u.verificationCode=?1")
 	public User findByVericationCode(String verificationCode);
 
 }

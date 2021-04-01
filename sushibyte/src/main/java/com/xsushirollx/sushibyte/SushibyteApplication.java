@@ -7,8 +7,6 @@ import com.xsushirollx.sushibyte.service.UserService;
 
 @SpringBootApplication
 public class SushibyteApplication {
-	@Autowired
-	private UserService u1;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(SushibyteApplication.class, args);

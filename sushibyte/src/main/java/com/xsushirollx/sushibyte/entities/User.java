@@ -6,8 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+
+import org.checkerframework.common.aliasing.qual.Unique;
+
+import net.bytebuddy.utility.RandomString;
 
 @Entity
 @Table(name = "user")
@@ -28,6 +31,8 @@ public class User {
 	@NotNull
 	private String email;
 	@Column(name = "verification_code")
+	@NotNull
+	@Unique
 	private String verificationCode;
 	@Column(name = "username")
 	private String username;
@@ -74,6 +79,7 @@ public class User {
 		this.email = email;
 		this.username = username;
 		this.password = password;
+		this.verificationCode = RandomString.make(64);
 	}
 
 	public int getId() {
