@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte;
+package com.xsushirollx.sushibyte.user;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

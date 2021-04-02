@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte;
+package com.xsushirollx.sushibyte.user;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
