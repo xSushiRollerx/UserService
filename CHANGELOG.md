@@ -1,0 +1,15 @@
+-Merge pull request #6 from xSushiRollerx/staging
+-Update README.md
+-Merge pull request #5 from xSushiRollerx/user_registration_Dylan
+-finished integration testing
+-added node js code to use mailer module for verification
+-Merge pull request #4 from xSushiRollerx/user_registration_Dylan
+-user registration works fully. Validation is implemented, but currently not working with a temporary email.
+-fixed url mapping (not tested yet)
+-started implementation of verification of email. Heavily relies on example. Will utilize java mail api to send the email instead.
+-added user registration service and mockito test, will add restcontroller later
+-Adding DAO, entities, and DAO tests
+-Merge pull request #1 from xSushiRollerx/dev
+-Forgot to eclipsify project
+-added initial spring boot project
+-Initial commit
