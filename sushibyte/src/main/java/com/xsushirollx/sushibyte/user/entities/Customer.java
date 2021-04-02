@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.entities;
+package com.xsushirollx.sushibyte.user.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,24 +6,25 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="customer")
-public class Customer{
+@Table(name = "customer")
+public class Customer {
 	@Id
 	private int id;
-	@Column(name="is_elderly")
+	@Column(name = "is_elderly")
 	private boolean isElderly;
-	@Column(name="is_veteran")
+	@Column(name = "is_veteran")
 	private boolean isVeteran;
-	@Column(name="loyalty_points")
+	@Column(name = "loyalty_points")
 	private int loyaltyPoints;
-	@Column(name="longitude")
+	@Column(name = "longitude")
 	private double longitude;
-	@Column(name="lattitude")
+	@Column(name = "lattitude")
 	private double lattitude;
-	
+
 	public Customer() {
-		
+
 	}
+
 	public Customer(int id) {
 		this.id = id;
 	}

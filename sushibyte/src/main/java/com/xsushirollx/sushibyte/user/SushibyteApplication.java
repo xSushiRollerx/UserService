@@ -1,9 +1,7 @@
-package com.xsushirollx.sushibyte;
+package com.xsushirollx.sushibyte.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.xsushirollx.sushibyte.service.UserService;
 
 @SpringBootApplication
 public class SushibyteApplication {

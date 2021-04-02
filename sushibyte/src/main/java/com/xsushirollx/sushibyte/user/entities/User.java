@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.entities;
+package com.xsushirollx.sushibyte.user.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,7 +40,6 @@ public class User {
 	private String password;
 	@Column(name = "salt")
 	private String salt;
-	
 
 	public String getVerificationCode() {
 		return verificationCode;
@@ -57,7 +56,7 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public String getSalt() {
 		return salt;
 	}
@@ -70,8 +69,9 @@ public class User {
 	private boolean isActive;
 
 	public User() {
-		
+
 	}
+
 	public User(String firstName, String lastName, String phone, String email, String username, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;

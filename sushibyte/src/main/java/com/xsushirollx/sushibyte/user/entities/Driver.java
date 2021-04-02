@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.entities;
+package com.xsushirollx.sushibyte.user.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,9 +20,9 @@ public class Driver {
 	private int totalDeliveries;
 
 	public Driver() {
-		
+
 	}
-	
+
 	public Driver(int id) {
 		this.id = id;
 	}
