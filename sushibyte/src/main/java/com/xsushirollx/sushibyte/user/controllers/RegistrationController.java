@@ -1,11 +1,15 @@
 package com.xsushirollx.sushibyte.user.controllers;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +26,9 @@ import com.xsushirollx.sushibyte.user.service.UserService;
 @RestController
 @RequestMapping("/users")
 public class RegistrationController {
-
 	@Autowired
 	UserService u1;
+	static Logger log = LogManager.getLogger(RegistrationController.class.getName());
 
 	/**
 	 * Temporary test method to be deleted upon creation of a node js server
@@ -74,9 +78,9 @@ public class RegistrationController {
 			try {
 				request.getRequestDispatcher("/users/helloworld2").forward(request, response);
 			} catch (ServletException e) {
-				e.printStackTrace();
+				log.log(Level.WARN,e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.log(Level.WARN,e.getMessage());
 			}
 			;
 		} else {

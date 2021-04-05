@@ -40,6 +40,8 @@ public class User {
 	private String password;
 	@Column(name = "salt")
 	private String salt;
+	@Column(name = "user_role")
+	private int userRole;
 
 	public String getVerificationCode() {
 		return verificationCode;
@@ -80,6 +82,8 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.verificationCode = RandomString.make(64);
+		userRole=2;	//customer
+		
 	}
 
 	public int getId() {

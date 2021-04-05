@@ -1,5 +1,6 @@
 package com.xsushirollx.sushibyte.user.service;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
@@ -42,7 +43,6 @@ public class UserService {
 	@Transactional
 	public String registerOnValidation(String firstName, String lastName, String phone, String email, String username, String password) {
 		User user = new User(firstName,lastName,phone,email,username,password);
-		log.log(Level.INFO, user==null);
 		if (!validatePassword(user.getPassword())||
 				!validateName(user.getFirstName())||
 				!validateName(user.getLastName())||
@@ -57,11 +57,20 @@ public class UserService {
 		try {
 			// email validated with hibernate
 			user = u1.save(user);
+			final User user1 = user;
 			c1.save(new Customer(user.getId()));
+			Thread t = new Thread(()->{
+				LocalDate date = LocalDate.now();
+				//Thread.sleep(10000);
+				while(date==LocalDate.now()) {
+					//yield because wait requires synchronous block
+					Thread.yield();
+				}
+				deleteUserPermanent(user1.getId());
+			});
+			t.start();
 		} catch (Exception e) {
-			log.debug("Was unable to save user.");
 		}
-		log.log(Level.INFO, user==null);
 		return user.getVerificationCode();
 	}
 
@@ -151,12 +160,20 @@ public class UserService {
 	@Transactional
 	private boolean deleteUserPermanent(int id) {
 		try {
-			d1.deleteById(id);
-			c1.deleteById(id);
-			u1.deleteById(id);;
+			if (d1.existsById(id)) {
+				d1.deleteById(id);
+			}
+			if (c1.existsById(id)) {
+				c1.deleteById(id);
+			}
+			if (u1.existsById(id)) {
+				u1.deleteById(id);
+			}
 		} catch (Exception e) {
+			log.log(Level.INFO, "User not deleted");
 			return false;
 		}
+		log.log(Level.INFO, "User deleted");
 		return true;
 	}
 }
