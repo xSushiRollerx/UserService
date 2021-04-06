@@ -1,6 +1,8 @@
 package com.xsushirollx.sushibyte.user.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
@@ -9,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.xsushirollx.sushibyte.user.dto.LoggedUser;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
@@ -29,6 +33,8 @@ public class UserService {
 	private CustomerDAO c1;
 	@Autowired
 	private DriverDAO d1;
+	//users mapped with user role
+	Map<Integer,LoggedUser> loggedUsers = new HashMap<Integer,LoggedUser>();
 	static Logger log = LogManager.getLogger(UserService.class.getName());
 
 	/**
@@ -175,5 +181,39 @@ public class UserService {
 		}
 		log.log(Level.INFO, "User deleted");
 		return true;
+	}
+	
+	public Integer logIn(String id, String password) {
+		User user = null;
+		try {
+			user=u1.findByUsername(id);
+		}
+		catch(Exception e1) {
+			try {
+				user=u1.findByEmail(id);
+			}
+			catch(Exception e2) {
+				log.log(Level.WARN, "Cannot find user");
+				return null;
+			}
+		}
+		if (PasswordUtils.verifyUserPassword(password,user.getPassword(),user.getSalt())) {
+			LoggedUser cred = new LoggedUser(user.getUsername(),user.getId());
+			loggedUsers.put(cred.getHashCode(), cred);
+			return cred.getHashCode();
+		}
+		log.log(Level.INFO, password + " did not match the one on file");
+		return null;
+	}
+	
+	/**
+	 * @param key not the id of the record, but key of the hashmap credentials
+	 * @return
+	 */
+	public boolean logOut(Integer key) {
+		if (key != null) {
+			loggedUsers.remove(key);
+		}
+		return false;
 	}
 }
