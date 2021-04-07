@@ -1,3 +1,9 @@
+commit eee1ba4d095201b25c453f60ee12409071f44464
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Mon Apr 5 19:45:38 2021 -0700
+
+    Added implementation for login and logout as well as session timeout
+
 commit 243da0d4ca4220e19a1ab2cdd48ce0c3f4cc2400
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Mon Apr 5 14:23:23 2021 -0700

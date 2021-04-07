@@ -10,13 +10,13 @@ package com.xsushirollx.sushibyte.user.dto;
  */
 public class LoggedUser {
 	private String username;
-	private int userRole;
-	private int hashCode;
+	private Integer userRole;
+	private Integer hashCode;
 	public LoggedUser(String username, int userRole) {
 		super();
 		this.username = username;
 		this.userRole = userRole;
-		hashCode = this.hashCode();
+		this.hashCode = hashCode();
 	}
 	public String getUsername() {
 		return username;
@@ -34,7 +34,6 @@ public class LoggedUser {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + hashCode;
 		result = prime * result + userRole;
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;

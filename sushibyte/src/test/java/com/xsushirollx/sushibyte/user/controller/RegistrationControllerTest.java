@@ -25,7 +25,7 @@ class RegistrationControllerTest {
 	@MockBean
 	UserService userService;
 	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 
 	@Test
 	void registrationTestOnSuccess() throws Exception {

@@ -1,9 +1,6 @@
 package com.xsushirollx.sushibyte.user.controllers;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
