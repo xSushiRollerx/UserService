@@ -1,3 +1,9 @@
+commit 3f02bcfa17affdcc2cba265794a13cb6d42cadfe
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Wed Apr 7 13:46:04 2021 -0700
+
+    added controller test and service test for authorization, login and logout stories
+
 commit eee1ba4d095201b25c453f60ee12409071f44464
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Mon Apr 5 19:45:38 2021 -0700

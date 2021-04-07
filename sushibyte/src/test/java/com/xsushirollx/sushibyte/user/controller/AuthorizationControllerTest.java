@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.Test;
@@ -34,18 +36,20 @@ class AuthorizationControllerTest {
 	@Test
 	void logInTest() throws Exception {
 		when(userService.logIn(null, null)).thenReturn(null);
-		mockMvc.perform(get("/auth/login").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/auth/login").session(session).accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().is(HttpServletResponse.SC_NOT_FOUND));
 		when(userService.logIn(null, null)).thenReturn(123);
-		mockMvc.perform(get("/auth/login").accept(MediaType.APPLICATION_JSON))
-		.andExpect(redirectedUrl("/index"));
+		mockMvc.perform(get("/auth/login").session(session).accept(MediaType.APPLICATION_JSON))
+		.andExpect(redirectedUrl("/portal.html"));
+		assertEquals(123,session.getAttribute("key"));
 	}
 	
 	@Test
 	void LogOutTest() throws Exception {
 		when(userService.logOut(null)).thenReturn(true);
-		mockMvc.perform(get("/auth/logout").accept(MediaType.APPLICATION_JSON))
-		.andExpect(redirectedUrl("/auth/login"));
+		mockMvc.perform(get("/auth/logout").session(session).accept(MediaType.APPLICATION_JSON))
+		.andExpect(redirectedUrl("/login.html"));
+		assertTrue(session.isInvalid());
 	}
 
 }

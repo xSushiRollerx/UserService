@@ -40,7 +40,7 @@ public class AuthorizationController {
 		if (key!=null) {
 			HttpSession session = request.getSession();
 			session.setAttribute("key", key);
-			response.sendRedirect("/index");	//Temporary redirect location for now
+			response.sendRedirect("/portal.html");	//Temporary redirect location for now
 			return "login_success";
 		} else {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -54,7 +54,7 @@ public class AuthorizationController {
 		Integer key = (Integer)session.getAttribute("key");
 		session.invalidate();
 		u1.logOut(key);
-		response.sendRedirect("/auth/login");
+		response.sendRedirect("/login.html");
 	}
 
 }
