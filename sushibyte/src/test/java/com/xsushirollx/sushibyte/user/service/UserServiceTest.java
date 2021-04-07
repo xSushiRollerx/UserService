@@ -7,8 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.xsushirollx.sushibyte.user.dto.LoggedUser;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
+import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 @SpringBootTest
 class UserServiceTest {
@@ -49,11 +52,7 @@ class UserServiceTest {
 
 	@Test
 	void validateEmailTest() {
-		User user = new User();
-		when(m1.findByEmail("dylan.tran@smoothstack.com")).thenReturn(null);
 		assertTrue(u1.validateEmail("dylan.tran@smoothstack.com"));
-		when(m1.findByEmail("dylan.tran@smoothstack.com")).thenReturn(user);
-		assertFalse(u1.validateEmail("dylan.tran@smoothstack.com"));
 	}
 
 	@Test
@@ -82,6 +81,45 @@ class UserServiceTest {
 		when(m1.findByVericationCode("test")).thenReturn(user);
 		assertFalse(u1.verifyUserEmail(null));
 		assertTrue(u1.verifyUserEmail("test"));
+	}
+	
+	@Test
+	void logInTest() {
+		User user = new User();
+		user.setUsername("Dylan");
+		String salt = PasswordUtils.getSalt(30);
+		user.setPassword(PasswordUtils.generateSecurePassword("password", salt));
+		user.setSalt(salt);
+		
+		User user2 = new User();
+		user2.setUsername("Dylan2");
+		user2.setPassword(PasswordUtils.generateSecurePassword("password", salt));
+		user2.setSalt(salt);
+		
+		//verify password check is correct
+		assertTrue(PasswordUtils.verifyUserPassword("password", user2.getPassword(), salt));
+		
+		when(m1.findByUsername("Dylan")).thenReturn(user);
+		assertNotNull(u1.logIn("Dylan", "password"));
+		when(m1.findByEmail("Dylan@gmail.com")).thenReturn(user2);
+		assertNotNull(u1.logIn("Dylan@gmail.com", "password"));
+	}
+	
+	@Test
+	void getAuthorizationTest() {
+		u1.loggedUsers.put(10, new LoggedUser("Test",3));
+		u1.loggedUsers.put(11, new LoggedUser("Test",2));
+		u1.loggedUsers.put(12, new LoggedUser("Test",1));
+		assertEquals(u1.getAuthorization(10),3);
+		assertEquals(u1.getAuthorization(11),2);
+		assertEquals(u1.getAuthorization(12),1);
+	}
+	
+	@Test
+	void logOutTest() {
+		u1.loggedUsers.put(10, new LoggedUser("Test",3));
+		assertFalse(u1.logOut(null));
+		assertTrue(u1.logOut(10));
 	}
 	
 }

@@ -1,6 +1,8 @@
 package com.xsushirollx.sushibyte.user.service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Level;
@@ -9,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.xsushirollx.sushibyte.user.dto.LoggedUser;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
@@ -29,6 +33,8 @@ public class UserService {
 	private CustomerDAO c1;
 	@Autowired
 	private DriverDAO d1;
+	//users mapped with user role
+	Map<Integer,LoggedUser> loggedUsers = new HashMap<Integer,LoggedUser>();
 	static Logger log = LogManager.getLogger(UserService.class.getName());
 
 	/**
@@ -47,6 +53,7 @@ public class UserService {
 				!validateName(user.getFirstName())||
 				!validateName(user.getLastName())||
 				!validateEmail(user.getEmail())||
+				checkEmailExist(user.getEmail())||
 				!validateUsername(user.getUsername())||
 				!validatePhone(user.getPhone())) {
 			return null;
@@ -57,16 +64,21 @@ public class UserService {
 		try {
 			// email validated with hibernate
 			user = u1.save(user);
-			final User user1 = user;
+			User user1 = user;
 			c1.save(new Customer(user.getId()));
 			Thread t = new Thread(()->{
 				LocalDate date = LocalDate.now();
 				//Thread.sleep(10000);
 				while(date==LocalDate.now()) {
 					//yield because wait requires synchronous block
+					//may opt for a wait and have a separate daily function
+					//notify all waiting threads
 					Thread.yield();
 				}
-				deleteUserPermanent(user1.getId());
+				final User user2 = u1.findByUsername(username);
+				if (!user1.isActive()) {
+					deleteUserPermanent(user2.getId());
+				}
 			});
 			t.start();
 		} catch (Exception e) {
@@ -76,15 +88,23 @@ public class UserService {
 
 	/**
 	 * @param email
-	 * @return true if meets criteria and is unique
+	 * @return true if meets criteria
 	 */
 	public boolean validateEmail(String email) {
 		String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 		Pattern pattern = Pattern.compile(regex);
 		if (pattern.matcher(email).matches()) {
-			return (u1.findByEmail(email) == null) ? true : false;
+			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * @param email
+	 * @return true if email exists in database
+	 */
+	private boolean checkEmailExist(String email) {
+		return(u1.findByEmail(email) != null)?true:false;
 	}
 
 	/**
@@ -139,7 +159,7 @@ public class UserService {
 	/**
 	 * removes verification code and set active
 	 * @param verificationCode
-	 * @return
+	 * @return true if email still exists and is currently not active
 	 */
 	public boolean verifyUserEmail(String verificationCode) {
 		User user = u1.findByVericationCode(verificationCode);
@@ -155,7 +175,7 @@ public class UserService {
 	/**
 	 * Only used for admin or unsuccessful email verification
 	 * @param user
-	 * @return
+	 * @return true if user is deleted or not exist
 	 */
 	@Transactional
 	private boolean deleteUserPermanent(int id) {
@@ -175,5 +195,57 @@ public class UserService {
 		}
 		log.log(Level.INFO, "User deleted");
 		return true;
+	}
+	
+	/**
+	 * @param id
+	 * @param password
+	 * @return key to access credential information
+	 */
+	public Integer logIn(String id, String password) {
+		User user = null;
+		try {
+			if(validateEmail(id)) {
+				user=u1.findByEmail(id);
+			}
+			else {
+				user=u1.findByUsername(id);
+			}
+		}
+		catch(Exception e2) {
+			log.log(Level.WARN, "Cannot find user");
+			return null;
+		}
+		if (PasswordUtils.verifyUserPassword(password,user.getPassword(),user.getSalt())) {
+			LoggedUser cred = new LoggedUser(user.getUsername(),user.getId());
+			loggedUsers.put(cred.getHashCode(), cred);
+			return cred.getHashCode();
+		}
+		log.log(Level.INFO, password + " did not match the one on file");
+		return null;
+	}
+	
+	/**
+	 * @param key not the id of the record, but key of the hashmap credentials
+	 * @return
+	 */
+	public boolean logOut(Integer key) {
+		if (loggedUsers.containsKey(key)) {
+			loggedUsers.remove(key);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @param key
+	 * @return role id of user if it exists,
+	 */
+	public Integer getAuthorization(Integer key) {
+		LoggedUser cred = loggedUsers.get(key); 
+		if (cred!=null) {
+			return cred.getUserRole();
+		}
+		return null;
 	}
 }
