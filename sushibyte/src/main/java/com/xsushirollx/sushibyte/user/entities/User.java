@@ -1,5 +1,7 @@
 package com.xsushirollx.sushibyte.user.entities;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,10 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
-import org.checkerframework.common.aliasing.qual.Unique;
-
-import net.bytebuddy.utility.RandomString;
 
 @Entity
 @Table(name = "user")
@@ -30,10 +28,8 @@ public class User {
 	@Column(name = "email")
 	@NotNull
 	private String email;
-	@Column(name = "verification_code")
-	@NotNull
-	@Unique
-	private String verificationCode;
+	@Column(name = "created_at")
+	private Timestamp createdAt;
 	@Column(name = "username")
 	private String username;
 	@Column(name = "password")
@@ -43,12 +39,12 @@ public class User {
 	@Column(name = "user_role")
 	private int userRole;
 
-	public String getVerificationCode() {
-		return verificationCode;
+	public Timestamp getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setVerificationCode(String verificationCode) {
-		this.verificationCode = verificationCode;
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getUsername() {
@@ -81,9 +77,8 @@ public class User {
 		this.email = email;
 		this.username = username;
 		this.password = password;
-		this.verificationCode = RandomString.make(64);
 		userRole=2;	//customer
-		
+		createdAt = Timestamp.from(Instant.now());
 	}
 
 	public int getUserRole() {

@@ -8,21 +8,21 @@ package com.xsushirollx.sushibyte.user.dto;
  * Allows user operations linked to specific account
  * Placed into list/map of active users
  */
-public class LoggedUser {
-	private String username;
+public class AuthorizationDTO {
+	private Integer id;
 	private Integer userRole;
 	private Integer hashCode;
-	public LoggedUser(String username, int userRole) {
+	public AuthorizationDTO(Integer id, Integer userRole) {
 		super();
-		this.username = username;
+		this.id = id;
 		this.userRole = userRole;
 		this.hashCode = hashCode();
 	}
-	public String getUsername() {
-		return username;
+	public Integer getId() {
+		return id;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public int getUserRole() {
 		return userRole;
@@ -34,8 +34,8 @@ public class LoggedUser {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + userRole;
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result +((id == null) ? 0 : userRole);
+		result = prime * result + ((id == null) ? 0 : id);
 		return result;
 	}
 	public int getHashCode() {

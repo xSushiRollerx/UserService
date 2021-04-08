@@ -21,12 +21,4 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 	@Query("select u from User u where u.phone=?1")
 	public User findByPhone(String phone);
 
-	/**
-	 * To be used for validating emails
-	 * @param verificationCode
-	 * @return
-	 */
-	@Query("select u from User u where u.verificationCode=?1")
-	public User findByVericationCode(String verificationCode);
-
 }

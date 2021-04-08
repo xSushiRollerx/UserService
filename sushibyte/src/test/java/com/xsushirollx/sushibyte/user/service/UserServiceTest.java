@@ -2,15 +2,23 @@ package com.xsushirollx.sushibyte.user.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Optional;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.xsushirollx.sushibyte.user.dto.LoggedUser;
+import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
+import com.xsushirollx.sushibyte.user.dto.UserDTO;
+import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
+import com.xsushirollx.sushibyte.user.entities.Verification;
+import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
+import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
 import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 @SpringBootTest
@@ -19,6 +27,10 @@ class UserServiceTest {
 	UserService u1;
 	@Mock
 	UserDAO m1;
+	@Mock
+	VerificationDAO v1;
+	@Mock
+	CustomerDAO c1;
 
 	@Test
 	void validateNameTest() {
@@ -66,19 +78,30 @@ class UserServiceTest {
 	
 	@Test
 	void registerOnValidationTest() {
+		UserDTO userDTO = new UserDTO();
+		userDTO.setEmail("test@smoothstack.com");
+		userDTO.setFirstName("test");
+		userDTO.setLastName("test");
+		userDTO.setPassword("password");
+		userDTO.setUsername("test");
+		userDTO.setPhone("1234658394");
 		User user = new User();
-		user.setVerificationCode("code");
+		when(m1.findByEmail("test@smoothstack.com")).thenReturn(null);
+		when(m1.findByUsername("test")).thenReturn(null);
+		when(m1.findByPhone("1234658394")).thenReturn(null);
 		when(m1.save(Mockito.any(User.class))).thenReturn(user);
-		assertNotNull(u1.registerOnValidation("Dylan", "Tran", "0000000000", "dylan.tran@smoothstack.com", 
-				"dyltra", "password"));
-		assertNull(u1.registerOnValidation("Dylan", "Tran", "0000000000", "dylan.tran@smoothstack.com", 
-				"dyltra", "passw"));
+		when(c1.save(Mockito.any(Customer.class))).thenReturn(new Customer());
+		when(v1.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
+		assertNotNull(u1.registerOnValidation(userDTO));
+		assertNull(u1.registerOnValidation(null));
 	}
 	
 	@Test
 	void verifyEmailTest() {
-		User user = new User();
-		when(m1.findByVericationCode("test")).thenReturn(user);
+		Verification user = new Verification(1);
+		user.setCreatedAt(Timestamp.from(Instant.now()));
+		when(v1.findByVericationCode("test")).thenReturn(user);
+		when(m1.findById(1)).thenReturn(Optional.of(new User()));
 		assertFalse(u1.verifyUserEmail(null));
 		assertTrue(u1.verifyUserEmail("test"));
 	}
@@ -107,9 +130,9 @@ class UserServiceTest {
 	
 	@Test
 	void getAuthorizationTest() {
-		u1.loggedUsers.put(10, new LoggedUser("Test",3));
-		u1.loggedUsers.put(11, new LoggedUser("Test",2));
-		u1.loggedUsers.put(12, new LoggedUser("Test",1));
+		u1.loggedUsers.put(10, new AuthorizationDTO(1,3));
+		u1.loggedUsers.put(11, new AuthorizationDTO(2,2));
+		u1.loggedUsers.put(12, new AuthorizationDTO(3,1));
 		assertEquals(u1.getAuthorization(10),3);
 		assertEquals(u1.getAuthorization(11),2);
 		assertEquals(u1.getAuthorization(12),1);
@@ -117,9 +140,16 @@ class UserServiceTest {
 	
 	@Test
 	void logOutTest() {
-		u1.loggedUsers.put(10, new LoggedUser("Test",3));
+		u1.loggedUsers.put(10, new AuthorizationDTO(1,3));
 		assertFalse(u1.logOut(null));
 		assertTrue(u1.logOut(10));
+	}
+	
+	@Test
+	void resetVerificationCodeTest() throws Exception {
+		when(m1.findByEmail("email")).thenReturn(new User());
+		when(v1.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
+		assertNotNull(u1.resetVerificationCode("email"));
 	}
 	
 }

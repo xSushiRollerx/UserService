@@ -12,8 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
 /**
@@ -21,7 +21,6 @@ import com.xsushirollx.sushibyte.user.service.UserService;
  * Controller for user registration and verification
  */
 @RestController
-@RequestMapping("/users")
 public class RegistrationController {
 	@Autowired
 	UserService u1;
@@ -32,9 +31,9 @@ public class RegistrationController {
 	 * @param request
 	 * @return verification code
 	 */
-	@GetMapping("/helloworld2")
+	@PostMapping("/helloworld2")
 	public String helloWorld2(HttpServletRequest request) {
-		return "Hello World. Your code is " + request.getAttribute("verification_code");
+		return "Test Mapping: Your verification code is " + request.getAttribute("verification_code");
 	}
 
 	/**
@@ -43,7 +42,7 @@ public class RegistrationController {
 	 * @param code
 	 * @return
 	 */
-	@PutMapping("/verify")
+	@GetMapping("/verify")
 	public String verifyUser(HttpServletResponse response, @Param("code") String code) {
 		if (u1.verifyUserEmail(code)) {
 			return "verify_success";
@@ -51,6 +50,31 @@ public class RegistrationController {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return "verify_fail";
 		}
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @param email
+	 * @return updates verification email
+	 */
+	@PostMapping("/verify")
+	public String resendVerificationCode(HttpServletRequest request, HttpServletResponse response, @Param("email") String email) {
+		String code = u1.resetVerificationCode(email);
+		if (code!=null) {
+			try {
+				request.setAttribute("verification_code", code);
+				request.getRequestDispatcher("/helloworld2").forward(request, response);
+			} catch (ServletException e) {
+				log.log(Level.WARN,e.getMessage());
+			} catch (IOException e) {
+				log.log(Level.WARN,e.getMessage());
+			}
+		} else {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return "resend_fail";
+		}
+		return "resend_fail";
 	}
 
 	/**
@@ -65,21 +89,27 @@ public class RegistrationController {
 	 * @param username
 	 * @return redirect if successful
 	 */
-	@PostMapping("/register")
+	@PostMapping("/user")
 	public String registerUser(HttpServletRequest request, HttpServletResponse response,
 			@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email,
 			@Param("password") String password, @Param("phone") String phone, @Param("username") String username) {
-		String verificationCode = u1.registerOnValidation(firstName, lastName, phone, email, username, password);
+		UserDTO userDTO = new UserDTO();
+		userDTO.setEmail(email);
+		userDTO.setFirstName(firstName);
+		userDTO.setLastName(lastName);
+		userDTO.setPassword(password);
+		userDTO.setUsername(username);
+		userDTO.setPhone(phone);
+		String verificationCode = u1.registerOnValidation(userDTO);
 		if (verificationCode != null) {
 			request.setAttribute("verification_code", verificationCode);
 			try {
-				request.getRequestDispatcher("/users/helloworld2").forward(request, response);
+				request.getRequestDispatcher("/helloworld2").forward(request, response);
 			} catch (ServletException e) {
 				log.log(Level.WARN,e.getMessage());
 			} catch (IOException e) {
 				log.log(Level.WARN,e.getMessage());
 			}
-			;
 		} else {
 			// could check each validation step
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);

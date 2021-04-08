@@ -21,7 +21,6 @@ import com.xsushirollx.sushibyte.user.service.UserService;
  * Controller for user registration and verification
  */
 @RestController
-@RequestMapping("/auth")
 public class AuthorizationController {
 	@Autowired
 	UserService u1;

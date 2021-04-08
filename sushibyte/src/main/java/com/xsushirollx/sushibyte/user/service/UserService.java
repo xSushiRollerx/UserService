@@ -1,23 +1,25 @@
 package com.xsushirollx.sushibyte.user.service;
 
-import java.time.LocalDate;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.xsushirollx.sushibyte.user.dto.LoggedUser;
+import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
+import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
+import com.xsushirollx.sushibyte.user.entities.Verification;
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
 import com.xsushirollx.sushibyte.user.repositories.DriverDAO;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
+import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
 import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 /**
@@ -28,27 +30,36 @@ import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 @Service
 public class UserService {
 	@Autowired
-	private UserDAO u1;
+	private UserDAO userDAO;
 	@Autowired
-	private CustomerDAO c1;
+	private CustomerDAO customerDAO;
 	@Autowired
-	private DriverDAO d1;
+	private DriverDAO driverDAO;
+	@Autowired
+	private VerificationDAO verificationDAO;
 	//users mapped with user role
-	Map<Integer,LoggedUser> loggedUsers = new HashMap<Integer,LoggedUser>();
+	Map<Integer,AuthorizationDTO> loggedUsers = new HashMap<Integer,AuthorizationDTO>();
 	static Logger log = LogManager.getLogger(UserService.class.getName());
 
 	/**
-	 * @param phone 
-	 * @param email 
-	 * @param username 
-	 * @param password 
+	 * @param userDTO TODO
 	 * @param string 
 	 * @param user
 	 * @return true if user has successfully been saved
 	 */
 	@Transactional
-	public String registerOnValidation(String firstName, String lastName, String phone, String email, String username, String password) {
-		User user = new User(firstName,lastName,phone,email,username,password);
+	public String registerOnValidation(UserDTO userDTO) {
+		if (userDTO==null) {
+			return null;
+		}
+		User user = new User();
+		user.setEmail(userDTO.getEmail());
+		user.setUsername(userDTO.getUsername());
+		user.setPassword(userDTO.getPassword());
+		user.setFirstName(userDTO.getFirstName());
+		user.setLastName(userDTO.getLastName());
+		user.setPhone(userDTO.getPhone());
+		user.setUserRole(2);
 		if (!validatePassword(user.getPassword())||
 				!validateName(user.getFirstName())||
 				!validateName(user.getLastName())||
@@ -61,29 +72,16 @@ public class UserService {
 		String salt = PasswordUtils.getSalt(30);
 		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword(), salt));
 		user.setSalt(salt);
+		Verification verification = null;
 		try {
 			// email validated with hibernate
-			user = u1.save(user);
-			User user1 = user;
-			c1.save(new Customer(user.getId()));
-			Thread t = new Thread(()->{
-				LocalDate date = LocalDate.now();
-				//Thread.sleep(10000);
-				while(date==LocalDate.now()) {
-					//yield because wait requires synchronous block
-					//may opt for a wait and have a separate daily function
-					//notify all waiting threads
-					Thread.yield();
-				}
-				final User user2 = u1.findByUsername(username);
-				if (!user1.isActive()) {
-					deleteUserPermanent(user2.getId());
-				}
-			});
-			t.start();
+			user = userDAO.save(user);
+			customerDAO.save(new Customer(user.getId()));
+			verification=verificationDAO.save(new Verification(user.getId()));
 		} catch (Exception e) {
+			log.log(Level.WARN, e.getMessage());
 		}
-		return user.getVerificationCode();
+		return (verification!=null)?verification.getVerificationCode():null;
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class UserService {
 	 * @return true if email exists in database
 	 */
 	private boolean checkEmailExist(String email) {
-		return(u1.findByEmail(email) != null)?true:false;
+		return(userDAO.findByEmail(email) != null)?true:false;
 	}
 
 	/**
@@ -115,7 +113,7 @@ public class UserService {
 		if (username == null) {
 			return false;
 		}
-		return (u1.findByUsername(username) == null) ? true : false;
+		return (userDAO.findByUsername(username) == null) ? true : false;
 	}
 
 	/**
@@ -130,7 +128,7 @@ public class UserService {
 			if (!Character.isDigit(i))
 				return false;
 		}
-		return (u1.findByPhone(phone) == null) ? true : false;
+		return (userDAO.findByPhone(phone) == null) ? true : false;
 	}
 
 	/**
@@ -161,15 +159,40 @@ public class UserService {
 	 * @param verificationCode
 	 * @return true if email still exists and is currently not active
 	 */
+	@Transactional
 	public boolean verifyUserEmail(String verificationCode) {
-		User user = u1.findByVericationCode(verificationCode);
-		if (user == null||user.isActive()) {
+		Verification verification = verificationDAO.findByVericationCode(verificationCode);
+		if (verification == null) {
+			return false;
+		}
+		if (Duration.between(Instant.now(), verification.getCreatedAt().toInstant()).toMinutes()>10) {
+			log.log(Level.DEBUG,"Verification code has expired");
+			return false;
+		}
+		User user = userDAO.findById(verification.getId()).get();
+		if (user.isActive()) {
 			return false;
 		}
 		user.setActive(true);
-		user.setVerificationCode(null);
-		u1.save(user);
+		try{
+			userDAO.save(user);
+			verificationDAO.delete(verification);
+		}
+		catch(Exception e) {
+			log.log(Level.WARN, e.getMessage() + ":\tVerify user email failed");
+		}
 		return true;
+	}
+	
+	@Transactional
+	public String resetVerificationCode(String email) {
+		User user = userDAO.findByEmail(email);
+		if (user==null) {
+			return null;
+		}
+		Verification verification = new Verification(user.getId());
+		verification = verificationDAO.save(verification);
+		return verification.getVerificationCode();
 	}
 
 	/**
@@ -178,16 +201,22 @@ public class UserService {
 	 * @return true if user is deleted or not exist
 	 */
 	@Transactional
-	private boolean deleteUserPermanent(int id) {
+	private boolean deleteUserPermanent(Integer id) {
+		if (id==null) {
+			return false;
+		}
 		try {
-			if (d1.existsById(id)) {
-				d1.deleteById(id);
+			if(verificationDAO.existsById(id)) {
+				verificationDAO.deleteById(id);
 			}
-			if (c1.existsById(id)) {
-				c1.deleteById(id);
+			if (driverDAO.existsById(id)) {
+				driverDAO.deleteById(id);
 			}
-			if (u1.existsById(id)) {
-				u1.deleteById(id);
+			if (customerDAO.existsById(id)) {
+				customerDAO.deleteById(id);
+			}
+			if (userDAO.existsById(id)) {
+				userDAO.deleteById(id);
 			}
 		} catch (Exception e) {
 			log.log(Level.INFO, "User not deleted");
@@ -206,18 +235,21 @@ public class UserService {
 		User user = null;
 		try {
 			if(validateEmail(id)) {
-				user=u1.findByEmail(id);
+				user=userDAO.findByEmail(id);
 			}
 			else {
-				user=u1.findByUsername(id);
+				user=userDAO.findByUsername(id);
 			}
 		}
 		catch(Exception e2) {
-			log.log(Level.WARN, "Cannot find user");
+			log.log(Level.WARN, "Cannot find user " +id);
+			return null;
+		}
+		if(user==null) {
 			return null;
 		}
 		if (PasswordUtils.verifyUserPassword(password,user.getPassword(),user.getSalt())) {
-			LoggedUser cred = new LoggedUser(user.getUsername(),user.getId());
+			AuthorizationDTO cred = new AuthorizationDTO(user.getId(),user.getId());
 			loggedUsers.put(cred.getHashCode(), cred);
 			return cred.getHashCode();
 		}
@@ -242,7 +274,7 @@ public class UserService {
 	 * @return role id of user if it exists,
 	 */
 	public Integer getAuthorization(Integer key) {
-		LoggedUser cred = loggedUsers.get(key); 
+		AuthorizationDTO cred = loggedUsers.get(key); 
 		if (cred!=null) {
 			return cred.getUserRole();
 		}
