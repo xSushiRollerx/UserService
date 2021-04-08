@@ -1,3 +1,27 @@
+commit 20d84771e4f7b72124282ec3bb9828addeb533f7
+Merge: 2655797 065af75
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Wed Apr 7 14:43:37 2021 -0700
+
+    Merge pull request #9 from xSushiRollerx/user_authorization_Dylan
+    
+    Forgot to test the sessions
+
+commit 065af755b4cf3822bf89e69047d50354d68cd496
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Wed Apr 7 14:42:33 2021 -0700
+
+    Forgot to test the sessions
+
+commit 26557971022596d64f1d4924883704a20172fe33
+Merge: 243da0d 3f02bcf
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Wed Apr 7 13:47:28 2021 -0700
+
+    Merge pull request #8 from xSushiRollerx/user_authorization_Dylan
+    
+    User authorization dylan
+
 commit 3f02bcfa17affdcc2cba265794a13cb6d42cadfe
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Wed Apr 7 13:46:04 2021 -0700

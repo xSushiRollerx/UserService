@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.user.utils;
+package com.xsushirollx.sushibyte.user.configs;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

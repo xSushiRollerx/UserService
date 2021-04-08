@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
 import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
@@ -20,7 +22,6 @@ import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
 import com.xsushirollx.sushibyte.user.repositories.DriverDAO;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
 import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
-import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 /**
  * @author dyltr 
@@ -273,11 +274,12 @@ public class UserService {
 	 * @param key
 	 * @return role id of user if it exists,
 	 */
-	public Integer getAuthorization(Integer key) {
+	public AuthorizationDTO getAuthorization(Integer key) {
 		AuthorizationDTO cred = loggedUsers.get(key); 
 		if (cred!=null) {
-			return cred.getUserRole();
+			return cred;
 		}
 		return null;
 	}
+	
 }

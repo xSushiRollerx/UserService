@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
 import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
@@ -19,7 +21,6 @@ import com.xsushirollx.sushibyte.user.entities.Verification;
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
 import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
-import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 @SpringBootTest
 class UserServiceTest {
@@ -133,9 +134,9 @@ class UserServiceTest {
 		u1.loggedUsers.put(10, new AuthorizationDTO(1,3));
 		u1.loggedUsers.put(11, new AuthorizationDTO(2,2));
 		u1.loggedUsers.put(12, new AuthorizationDTO(3,1));
-		assertEquals(u1.getAuthorization(10),3);
-		assertEquals(u1.getAuthorization(11),2);
-		assertEquals(u1.getAuthorization(12),1);
+		assertEquals(u1.getAuthorization(10).getUserRole(),3);
+		assertEquals(u1.getAuthorization(11).getUserRole(),2);
+		assertEquals(u1.getAuthorization(12).getUserRole(),1);
 	}
 	
 	@Test
