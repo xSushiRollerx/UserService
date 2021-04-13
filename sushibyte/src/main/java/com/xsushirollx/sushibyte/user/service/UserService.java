@@ -62,6 +62,8 @@ public class UserService {
 				!validateName(user.getLastName())||
 				!validateEmail(user.getEmail())||
 				checkEmailExist(user.getEmail())||
+				checkPhoneExist(user.getPhone())||
+				checkUsernameExist(user.getUsername())||
 				!validateUsername(user.getUsername())||
 				!validatePhone(user.getPhone())) {
 			return null;
@@ -101,16 +103,32 @@ public class UserService {
 	private boolean checkEmailExist(String email) {
 		return(userDAO.findByEmail(email) != null)?true:false;
 	}
+	
+	/**
+	 * @param email
+	 * @return true if phone exists in database
+	 */
+	private boolean checkPhoneExist(String phone) {
+		return(userDAO.findByPhone(phone) != null)?true:false;
+	}
+	
+	/**
+	 * @param email
+	 * @return true if email exists in database
+	 */
+	private boolean checkUsernameExist(String username) {
+		return(userDAO.findByUsername(username) != null)?true:false;
+	}
 
 	/**
 	 * @param username
 	 * @return true if meets criteria and is unique
 	 */
 	public boolean validateUsername(String username) {
-		if (username == null) {
+		if (username == null||username.equals("")) {
 			return false;
 		}
-		return (userDAO.findByUsername(username) == null) ? true : false;
+		return true;
 	}
 
 	/**
@@ -125,7 +143,7 @@ public class UserService {
 			if (!Character.isDigit(i))
 				return false;
 		}
-		return (userDAO.findByPhone(phone) == null) ? true : false;
+		return true;
 	}
 
 	/**
@@ -278,7 +296,6 @@ public class UserService {
 				!validateName(userD.getFirstName())||
 				!validateName(userD.getLastName())||
 				!validateEmail(userD.getEmail())||
-				checkEmailExist(userD.getEmail())||
 				!validateUsername(userD.getUsername())||
 				!validatePhone(userD.getPhone())) {
 			return false;

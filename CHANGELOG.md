@@ -1,3 +1,15 @@
+commit 1191a7837b4ac0dac1615fa4f0d353abc602b8b7
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Tue Apr 13 10:16:19 2021 -0700
+
+    Change password encryption to hashing and implemented methods for user update, get user info, and close/reactivate account. Testing and controller methods to be added.
+
+commit 8b47232cae018687ece4df2524855a9cf6a4d0b2
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Thu Apr 8 05:47:22 2021 -0700
+
+    completed unit testing. Reached 80 percent coverage. Realized too late that JWT and spring security is the way to go. Will fix in future.
+
 commit 84d81cf4559f431656665e12e834b17bc71d0579
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Thu Apr 8 03:59:22 2021 -0700

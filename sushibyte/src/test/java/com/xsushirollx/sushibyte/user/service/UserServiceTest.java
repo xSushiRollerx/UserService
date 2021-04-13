@@ -21,56 +21,46 @@ import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
 @SpringBootTest
 class UserServiceTest {
 	@InjectMocks
-	UserService u1;
+	UserService userService;
 	@Mock
-	UserDAO m1;
+	UserDAO userDAO;
 	@Mock
-	VerificationDAO v1;
+	VerificationDAO verificationDAO;
 	@Mock
-	CustomerDAO c1;
+	CustomerDAO customerDAO;
 
 	@Test
 	void validateNameTest() {
-		assertEquals(u1.validateName("Hello"), true);
-		assertEquals(u1.validateName("Hello1"), false);
+		assertEquals(userService.validateName("Hello"), true);
+		assertEquals(userService.validateName("Hello1"), false);
 	}
 
 	@Test
 	void validatePasswordTest() {
-		assertEquals(u1.validatePassword("Hello1"), true);
+		assertEquals(userService.validatePassword("Hello1"), true);
 		// password too short
-		assertEquals(u1.validatePassword("Hello"), false);
+		assertEquals(userService.validatePassword("Hello"), false);
 		// password too long
-		assertEquals(u1.validatePassword("Hello12345678912345612"), false);
+		assertEquals(userService.validatePassword("Hello12345678912345612"), false);
 	}
 
 	@Test
 	void validatePhoneTest() {
-		User user = new User();
-		when(m1.findByPhone("1233219900")).thenReturn(null);
-		assertTrue(u1.validatePhone("1233219900"));
-		when(m1.findByPhone("23124241231")).thenReturn(user);
-		assertFalse(u1.validatePhone("23124241231"));
-		when(m1.findByPhone("2312424ds2")).thenReturn(user);
-		assertFalse(u1.validatePhone("2312424ds2"));
-		when(m1.findByPhone("2312424")).thenReturn(user);
-		assertFalse(u1.validatePhone("2312424"));
-		when(m1.findByPhone("1233219900")).thenReturn(user);
-		assertFalse(u1.validatePhone("1233219900"));
+		assertTrue(userService.validatePhone("1233219900"));
+		assertFalse(userService.validatePhone("23124241231"));
+		assertFalse(userService.validatePhone("2312424ds2"));
+		assertFalse(userService.validatePhone("2312424"));
 	}
 
 	@Test
 	void validateEmailTest() {
-		assertTrue(u1.validateEmail("dylan.tran@smoothstack.com"));
+		assertTrue(userService.validateEmail("dylan.tran@smoothstack.com"));
 	}
 
 	@Test
 	void validateUsernameTest() {
-		User user = new User();
-		when(m1.findByUsername("test")).thenReturn(null);
-		assertTrue(u1.validateUsername("test"));
-		when(m1.findByUsername("test")).thenReturn(user);
-		assertFalse(u1.validateUsername("test"));
+		assertTrue(userService.validateUsername("test"));
+		assertFalse(userService.validateUsername(""));
 	}
 	
 	@Test
@@ -83,31 +73,72 @@ class UserServiceTest {
 		userDTO.setUsername("test");
 		userDTO.setPhone("1234658394");
 		User user = new User();
-		when(m1.findByEmail("test@smoothstack.com")).thenReturn(null);
-		when(m1.findByUsername("test")).thenReturn(null);
-		when(m1.findByPhone("1234658394")).thenReturn(null);
-		when(m1.save(Mockito.any(User.class))).thenReturn(user);
-		when(c1.save(Mockito.any(Customer.class))).thenReturn(new Customer());
-		when(v1.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
-		assertNotNull(u1.registerOnValidation(userDTO));
-		assertNull(u1.registerOnValidation(null));
+		when(userDAO.findByEmail("test@smoothstack.com")).thenReturn(null);
+		when(userDAO.findByUsername("test")).thenReturn(null);
+		when(userDAO.findByPhone("1234658394")).thenReturn(null);
+		when(userDAO.save(Mockito.any(User.class))).thenReturn(user);
+		when(customerDAO.save(Mockito.any(Customer.class))).thenReturn(new Customer());
+		when(verificationDAO.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
+		assertNotNull(userService.registerOnValidation(userDTO));
+		assertNull(userService.registerOnValidation(null));
 	}
 	
 	@Test
 	void verifyEmailTest() {
 		Verification user = new Verification(1);
 		user.setCreatedAt(Timestamp.from(Instant.now()));
-		when(v1.findByVericationCode("test")).thenReturn(user);
-		when(m1.findById(1)).thenReturn(Optional.of(new User()));
-		assertFalse(u1.verifyUserEmail(null));
-		assertTrue(u1.verifyUserEmail("test"));
+		when(verificationDAO.findByVericationCode("test")).thenReturn(user);
+		when(userDAO.findById(1)).thenReturn(Optional.of(new User()));
+		assertFalse(userService.verifyUserEmail(null));
+		assertTrue(userService.verifyUserEmail("test"));
 	}
 	
 	@Test
 	void resetVerificationCodeTest() throws Exception {
-		when(m1.findByEmail("email")).thenReturn(new User());
-		when(v1.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
-		assertNotNull(u1.resetVerificationCode("email"));
+		when(userDAO.findByEmail("email")).thenReturn(new User());
+		when(verificationDAO.save(Mockito.any(Verification.class))).thenReturn(new Verification(1));
+		assertNotNull(userService.resetVerificationCode("email"));
+	}
+	
+	@Test
+	void closeAccountTest() {
+		Optional<User> user = Optional.of(new User());
+		when(userDAO.existsById(10)).thenReturn(true);
+		when(userDAO.findById(10)).thenReturn(user);
+		userService.closeAccount(10);
+		assertEquals(false,user.get().isActive());		
+	}
+	
+	@Test
+	void reactivateAccountTest() {
+		Optional<User> user = Optional.of(new User());
+		when(userDAO.existsById(10)).thenReturn(true);
+		when(userDAO.findById(10)).thenReturn(user);
+		userService.reactivateAccount(10);
+		assertEquals(true,user.get().isActive());
+	}
+	
+	@Test
+	void updateAccountTest() {
+		Optional<User> user = Optional.of(new User());
+		UserDTO userD = new UserDTO();
+		userD.setEmail("test@test.com");
+		userD.setFirstName("Test");
+		userD.setLastName("Test");
+		userD.setPassword("testing");
+		userD.setUsername("test");
+		userD.setPhone("1234567891");
+		when(userDAO.existsById(10)).thenReturn(true);
+		when(userDAO.findById(10)).thenReturn(user);
+		assertTrue(userService.updateAccount(10,userD));
+	}
+	
+	@Test
+	void getUsertInfoTest() {
+		Optional<User> user = Optional.of(new User());
+		when(userDAO.existsById(10)).thenReturn(true);
+		when(userDAO.findById(10)).thenReturn(user);
+		assertEquals(userService.getUserInfo(10).getClass(),UserDTO.class);
 	}
 	
 }

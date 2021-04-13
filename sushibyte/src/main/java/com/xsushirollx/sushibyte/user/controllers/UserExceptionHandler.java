@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.user.controller;
+package com.xsushirollx.sushibyte.user.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
