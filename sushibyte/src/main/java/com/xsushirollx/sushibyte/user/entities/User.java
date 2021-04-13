@@ -34,8 +34,6 @@ public class User {
 	private String username;
 	@Column(name = "password")
 	private String password;
-	@Column(name = "salt")
-	private String salt;
 	@Column(name = "user_role")
 	private int userRole;
 
@@ -55,14 +53,6 @@ public class User {
 		this.username = username;
 	}
 
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
-
 	@Column(name = "is_active")
 	private boolean isActive;
 
@@ -77,7 +67,7 @@ public class User {
 		this.email = email;
 		this.username = username;
 		this.password = password;
-		userRole=2;	//customer
+		userRole=3;	//customer
 		createdAt = Timestamp.from(Instant.now());
 	}
 
@@ -143,12 +133,6 @@ public class User {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone
-				+ ", email=" + email + ", password=" + password + ", isActive=" + isActive + "]";
 	}
 
 }

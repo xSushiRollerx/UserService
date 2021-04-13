@@ -1,3 +1,9 @@
+commit 84d81cf4559f431656665e12e834b17bc71d0579
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Thu Apr 8 03:59:22 2021 -0700
+
+    updated url paths to match expected uses and added verification entity and refactored everything using verification code from user to the newer entity
+
 commit 20d84771e4f7b72124282ec3bb9828addeb533f7
 Merge: 2655797 065af75
 Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>

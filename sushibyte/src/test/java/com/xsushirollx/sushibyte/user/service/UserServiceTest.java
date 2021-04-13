@@ -5,15 +5,11 @@ import static org.mockito.Mockito.when;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Optional;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
-import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
@@ -105,45 +101,6 @@ class UserServiceTest {
 		when(m1.findById(1)).thenReturn(Optional.of(new User()));
 		assertFalse(u1.verifyUserEmail(null));
 		assertTrue(u1.verifyUserEmail("test"));
-	}
-	
-	@Test
-	void logInTest() {
-		User user = new User();
-		user.setUsername("Dylan");
-		String salt = PasswordUtils.getSalt(30);
-		user.setPassword(PasswordUtils.generateSecurePassword("password", salt));
-		user.setSalt(salt);
-		
-		User user2 = new User();
-		user2.setUsername("Dylan2");
-		user2.setPassword(PasswordUtils.generateSecurePassword("password", salt));
-		user2.setSalt(salt);
-		
-		//verify password check is correct
-		assertTrue(PasswordUtils.verifyUserPassword("password", user2.getPassword(), salt));
-		
-		when(m1.findByUsername("Dylan")).thenReturn(user);
-		assertNotNull(u1.logIn("Dylan", "password"));
-		when(m1.findByEmail("Dylan@gmail.com")).thenReturn(user2);
-		assertNotNull(u1.logIn("Dylan@gmail.com", "password"));
-	}
-	
-	@Test
-	void getAuthorizationTest() {
-		u1.loggedUsers.put(10, new AuthorizationDTO(1,3));
-		u1.loggedUsers.put(11, new AuthorizationDTO(2,2));
-		u1.loggedUsers.put(12, new AuthorizationDTO(3,1));
-		assertEquals(u1.getAuthorization(10).getUserRole(),3);
-		assertEquals(u1.getAuthorization(11).getUserRole(),2);
-		assertEquals(u1.getAuthorization(12).getUserRole(),1);
-	}
-	
-	@Test
-	void logOutTest() {
-		u1.loggedUsers.put(10, new AuthorizationDTO(1,3));
-		assertFalse(u1.logOut(null));
-		assertTrue(u1.logOut(10));
 	}
 	
 	@Test

@@ -1,9 +1,8 @@
 package com.xsushirollx.sushibyte.user.service;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -11,9 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
-import com.xsushirollx.sushibyte.user.dto.AuthorizationDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
@@ -39,7 +36,6 @@ public class UserService {
 	@Autowired
 	private VerificationDAO verificationDAO;
 	//users mapped with user role
-	Map<Integer,AuthorizationDTO> loggedUsers = new HashMap<Integer,AuthorizationDTO>();
 	static Logger log = LogManager.getLogger(UserService.class.getName());
 
 	/**
@@ -70,9 +66,9 @@ public class UserService {
 				!validatePhone(user.getPhone())) {
 			return null;
 		}
-		String salt = PasswordUtils.getSalt(30);
-		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword(), salt));
-		user.setSalt(salt);
+		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
+		user.setCreatedAt(Timestamp.from(Instant.now()));
+		user.setUserRole(3);
 		Verification verification = null;
 		try {
 			// email validated with hibernate
@@ -226,60 +222,98 @@ public class UserService {
 		log.log(Level.INFO, "User deleted");
 		return true;
 	}
-	
+
 	/**
 	 * @param id
-	 * @param password
-	 * @return key to access credential information
+	 * @return true if account has successfully been deactivated
 	 */
-	public Integer logIn(String id, String password) {
-		User user = null;
-		try {
-			if(validateEmail(id)) {
-				user=userDAO.findByEmail(id);
+	@Transactional
+	public boolean closeAccount(Integer id) {
+		if (userDAO.existsById(id)) {
+			User user = userDAO.findById(id).get();
+			user.setActive(false);
+			try {
+				userDAO.save(user);
 			}
-			else {
-				user=userDAO.findByUsername(id);
+			catch(Exception e) {
+				log.log(Level.WARN, e.getMessage());
+				return false;
 			}
+			return true;
 		}
-		catch(Exception e2) {
-			log.log(Level.WARN, "Cannot find user " +id);
-			return null;
-		}
-		if(user==null) {
-			return null;
-		}
-		if (PasswordUtils.verifyUserPassword(password,user.getPassword(),user.getSalt())) {
-			AuthorizationDTO cred = new AuthorizationDTO(user.getId(),user.getId());
-			loggedUsers.put(cred.getHashCode(), cred);
-			return cred.getHashCode();
-		}
-		log.log(Level.INFO, password + " did not match the one on file");
-		return null;
+		log.log(Level.INFO,"Id " + id + " does not exist in database");
+		return false;
 	}
 	
 	/**
-	 * @param key not the id of the record, but key of the hashmap credentials
-	 * @return
+	 * @param id
+	 * @return true if account has successfully been reactivated
 	 */
-	public boolean logOut(Integer key) {
-		if (loggedUsers.containsKey(key)) {
-			loggedUsers.remove(key);
+	@Transactional
+	public boolean reactivateAccount(Integer id) {
+		if (userDAO.existsById(id)) {
+			User user = userDAO.findById(id).get();
+			user.setActive(true);
+			try {
+				userDAO.save(user);
+			}
+			catch(Exception e) {
+				log.log(Level.WARN, e.getMessage());
+				return false;
+			}
+			return true;
+		}
+		log.log(Level.INFO,"Id " + id + " does not exist in database");
+		return false;
+	}
+	
+	/**
+	 * @param id
+	 * @param userD
+	 * @return true if account has successfully updated
+	 */
+	@Transactional
+	public boolean updateAccount(int id, UserDTO userD) {
+		if (!validatePassword(userD.getPassword())||
+				!validateName(userD.getFirstName())||
+				!validateName(userD.getLastName())||
+				!validateEmail(userD.getEmail())||
+				checkEmailExist(userD.getEmail())||
+				!validateUsername(userD.getUsername())||
+				!validatePhone(userD.getPhone())) {
+			return false;
+		}
+		if (userDAO.existsById(id)) {
+			User user = userDAO.findById(id).get();
+			user.setEmail(userD.getEmail());
+			user.setFirstName(userD.getFirstName());
+			user.setLastName(userD.getLastName());
+			user.setPassword(PasswordUtils.generateSecurePassword(userD.getPassword()));
+			user.setPhone(userD.getPhone());
+			try {
+				userDAO.save(user);
+			}
+			catch(Exception e){
+				log.log(Level.WARN,e.getMessage());
+				return false;
+			}
 			return true;
 		}
 		return false;
 	}
 	
-	/**
-	 * @param key
-	 * @return role id of user if it exists,
-	 */
-	public AuthorizationDTO getAuthorization(Integer key) {
-		AuthorizationDTO cred = loggedUsers.get(key); 
-		if (cred!=null) {
-			return cred;
+	public UserDTO getUserInfo(int id) {
+		if(userDAO.existsById(id)) {
+			User user = userDAO.findById(id).get();
+			UserDTO userD = new UserDTO();
+			userD.setEmail(user.getEmail());
+			userD.setFirstName(user.getFirstName());
+			userD.setLastName(user.getLastName());
+			//Will not display password as it is hashed anyways
+			//userD.setPassword(user.getPassword());
+			userD.setPhone(user.getPhone());
+			return userD;
 		}
 		return null;
 	}
-	
 }

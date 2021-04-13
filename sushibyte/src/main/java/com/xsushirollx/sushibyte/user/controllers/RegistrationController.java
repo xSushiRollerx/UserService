@@ -86,7 +86,7 @@ public class RegistrationController {
 	 * @param email
 	 * @param password
 	 * @param phone
-	 * @param username
+	 * @param username remove query params
 	 * @return redirect if successful
 	 */
 	@PostMapping("/user")
