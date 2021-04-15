@@ -1,3 +1,9 @@
+commit 289d9a07042bb713860bec69250c7d3fde057873
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Tue Apr 13 11:00:45 2021 -0700
+
+    Finished service layer test implementation and passed all cases. Will implement controller and integration testing next.
+
 commit 1191a7837b4ac0dac1615fa4f0d353abc602b8b7
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Tue Apr 13 10:16:19 2021 -0700
