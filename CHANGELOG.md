@@ -1,3 +1,9 @@
+commit a0d204584feac1ffffaf448b3a4909929b31bab4
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Thu Apr 15 11:33:42 2021 -0700
+
+    Modded uri and return types to fit expectations and added implementation for the user crud controller
+
 commit 289d9a07042bb713860bec69250c7d3fde057873
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Tue Apr 13 11:00:45 2021 -0700

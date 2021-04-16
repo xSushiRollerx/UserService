@@ -28,40 +28,6 @@ class UserServiceTest {
 	VerificationDAO verificationDAO;
 	@Mock
 	CustomerDAO customerDAO;
-
-	@Test
-	void validateNameTest() {
-		assertEquals(userService.validateName("Hello"), true);
-		assertEquals(userService.validateName("Hello1"), false);
-	}
-
-	@Test
-	void validatePasswordTest() {
-		assertEquals(userService.validatePassword("Hello1"), true);
-		// password too short
-		assertEquals(userService.validatePassword("Hello"), false);
-		// password too long
-		assertEquals(userService.validatePassword("Hello12345678912345612"), false);
-	}
-
-	@Test
-	void validatePhoneTest() {
-		assertTrue(userService.validatePhone("1233219900"));
-		assertFalse(userService.validatePhone("23124241231"));
-		assertFalse(userService.validatePhone("2312424ds2"));
-		assertFalse(userService.validatePhone("2312424"));
-	}
-
-	@Test
-	void validateEmailTest() {
-		assertTrue(userService.validateEmail("dylan.tran@smoothstack.com"));
-	}
-
-	@Test
-	void validateUsernameTest() {
-		assertTrue(userService.validateUsername("test"));
-		assertFalse(userService.validateUsername(""));
-	}
 	
 	@Test
 	void registerOnValidationTest() {

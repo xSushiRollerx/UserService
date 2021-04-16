@@ -37,7 +37,7 @@ class RegistrationControllerTest {
 		when(userService.registerOnValidation(Mockito.any(UserDTO.class)))
 				.thenReturn("21839y23823127heubs2");
 		// temporary for testing purposes
-		mockMvc.perform(post("/user").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/users/user").accept(MediaType.APPLICATION_JSON))
 				.andExpect(forwardedUrl("/helloworld2"));
 	}
 
@@ -47,7 +47,7 @@ class RegistrationControllerTest {
 		when(userService.registerOnValidation(Mockito.any(UserDTO.class)))
 				.thenReturn(null);
 		// temporary for testing purposes
-		mockMvc.perform(post("/user").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(post("/users/user").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().is(HttpServletResponse.SC_NOT_ACCEPTABLE));
 	}
 
@@ -56,8 +56,8 @@ class RegistrationControllerTest {
 		// user not registered
 		when(userService.resetVerificationCode(null)).thenReturn("code");
 		// temporary for testing purposes
-		mockMvc.perform(post("/verify").accept(MediaType.APPLICATION_JSON))
-		.andExpect(forwardedUrl("/helloworld2"));
+		mockMvc.perform(post("/users/verify").accept(MediaType.APPLICATION_JSON))
+		.andExpect(forwardedUrl("http://localhost:8080/mail"));
 	}
 	
 	@Test
@@ -65,7 +65,7 @@ class RegistrationControllerTest {
 		// verify a valid account
 		when(userService.verifyUserEmail(null)).thenReturn(true);
 		// temporary for testing purposes
-		mockMvc.perform(get("/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(get("/users/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -73,7 +73,7 @@ class RegistrationControllerTest {
 		// verify a valid account
 		when(userService.verifyUserEmail(null)).thenReturn(false);
 		// temporary for testing purposes
-		mockMvc.perform(get("/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/users/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 	}
 
 }

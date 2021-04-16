@@ -14,45 +14,46 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
+/**
+ * @author dyltr
+ * More to be added
+ * Just including method to read all users
+ */
 @RestController
-@RequestMapping("/users")
-public class UserCrudController {
+@RequestMapping("/admins")
+public class AdminController {
 	@Autowired
 	UserService userService;
 	
+	@GetMapping("/user")
+	public ResponseEntity<String> getAllUsers(){
+		return null;
+	}
+	
 	@DeleteMapping("/user/{userId}")
 	public ResponseEntity<String> deactivateUser(@PathVariable("userId") Integer userId){
-		//get user id from jwt token
-		Integer sessionId = 0;
-		if (sessionId != userId) {
-			return new ResponseEntity<String>("Delete_failed",HttpStatus.UNAUTHORIZED);
-		}
 		if(userService.closeAccount(userId)) {
 			return new ResponseEntity<String>("Delete_successful",HttpStatus.valueOf(204));
 		}
 		return new ResponseEntity<String>("Delete_failed",HttpStatus.ACCEPTED);
 	}
 	
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<UserDTO> readUser(@PathVariable("userId") Integer userId){
-		UserDTO user = userService.getUserInfo(userId);
-		if (user==null) {
-			return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<UserDTO>(user, HttpStatus.OK);
-	}
-	
 	@PutMapping("/user/{userId}")
 	public ResponseEntity<String> updateUser(@PathVariable("userId") Integer userId, 
 			@RequestBody UserDTO userDTO){
-		//get user id from jwt token
-		Integer sessionId = 0;
-		if (sessionId != userId) {
-			return new ResponseEntity<String>("Update_failed",HttpStatus.UNAUTHORIZED);
-		}
 		if(userService.updateAccount(userId, userDTO)) {
 			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<String>("Update_failed",HttpStatus.NOT_MODIFIED);
 	}
+	
+	@PutMapping("/user/{userId}/role")
+	public ResponseEntity<String> updateUserRole(@PathVariable("userId") Integer userId, 
+			@RequestBody Integer roleId){
+		if(userService.updateAccountRole(userId, roleId)) {
+			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);
+		}
+		return new ResponseEntity<String>("Update_failed",HttpStatus.NOT_MODIFIED);
+	}
+	
 }

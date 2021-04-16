@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
+import com.xsushirollx.sushibyte.user.entities.Driver;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.entities.Verification;
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
@@ -124,7 +125,7 @@ public class UserService {
 	 * @param username
 	 * @return true if meets criteria and is unique
 	 */
-	public boolean validateUsername(String username) {
+	private boolean validateUsername(String username) {
 		if (username == null||username.equals("")) {
 			return false;
 		}
@@ -135,7 +136,7 @@ public class UserService {
 	 * @param phone
 	 * @return true if meets criteria and is unique
 	 */
-	public boolean validatePhone(String phone) {
+	private boolean validatePhone(String phone) {
 		if (phone == null || phone.length() != 10) {
 			return false;
 		}
@@ -150,7 +151,7 @@ public class UserService {
 	 * @param name
 	 * @return true if meets criteria
 	 */
-	public boolean validateName(String name) {
+	private boolean validateName(String name) {
 		Pattern pattern = Pattern.compile("[0-9]");
 		if (name == null || pattern.matcher(name).find()) {
 			return false;
@@ -162,7 +163,7 @@ public class UserService {
 	 * @param password
 	 * @return true if meets criteria
 	 */
-	public boolean validatePassword(String password) {
+	private boolean validatePassword(String password) {
 		if (password == null || password.length() < 6 || password.length() > 20) {
 			return false;
 		}
@@ -211,12 +212,12 @@ public class UserService {
 	}
 
 	/**
-	 * Only used for admin or unsuccessful email verification
+	 * Don't want to use for now
 	 * @param user
 	 * @return true if user is deleted or not exist
 	 */
 	@Transactional
-	private boolean deleteUserPermanent(Integer id) {
+	public boolean deleteUserPermanent(Integer id) {
 		if (id==null) {
 			return false;
 		}
@@ -332,5 +333,45 @@ public class UserService {
 			return userD;
 		}
 		return null;
+	}
+
+	@Transactional
+	public boolean updateAccountRole(Integer userId, Integer roleId) {
+		// if new driver, create in driver repo
+		// if removing driver, set drive as inactive
+		try {
+			if (!userDAO.existsById(userId)) {
+				log.log(Level.INFO,"User by id of {0} does not exist",userId);
+				return false;
+			}
+			User user = userDAO.findById(userId).get();
+			if (user.getUserRole()==roleId) {
+				log.log(Level.INFO, "User by id of {0} already has role of {1}",userId,roleId);
+				return false;
+			}
+			user.setUserRole(roleId);
+			userDAO.save(user);
+			//driver check
+			if (roleId == 2) {
+				Driver driver;
+				if (driverDAO.existsById(userId)) {
+					//set active
+					driver=driverDAO.findById(userId).get();
+					driver.setIsActive(true);
+					return true;
+				}
+				else {
+					//create driver
+					driver = new Driver();
+					driver.setId(userId);
+					driverDAO.save(driver);
+					return true;
+				}
+			}
+		}
+		catch(Exception e){
+			log.log(Level.WARN, e.getMessage());
+		}
+		return false;
 	}
 }
