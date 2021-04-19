@@ -9,68 +9,52 @@ import javax.persistence.Table;
 @Table(name = "driver")
 public class Driver {
 	@Id
-	private int id;
-	@Column(name = "longitude")
-	private double longitude;
-	@Column(name = "lattitude")
-	private double lattitude;
+	private Integer id;
 	@Column(name = "rating")
-	private int rating;
+	private Integer rating;
+	@Column(name = "is_active")
+	private Boolean isActive;
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	@Column(name = "total_deliveries")
-	private int totalDeliveries;
+	private Integer totalDeliveries;
 
 	public Driver() {
 
 	}
 
-	public Driver(int id) {
+	public Driver(Integer id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	@Override
-	public String toString() {
-		return "Driver [id=" + id + ", longitude=" + longitude + ", lattitude=" + lattitude + ", rating=" + rating
-				+ ", totalDeliveries=" + totalDeliveries + "]";
-	}
-
-	public int getRating() {
+	public Integer getRating() {
 		return rating;
 	}
 
-	public void setRating(int rating) {
+	public void setRating(Integer rating) {
 		this.rating = rating;
 	}
 
-	public int getTotalDeliveries() {
+	public Integer getTotalDeliveries() {
 		return totalDeliveries;
 	}
 
-	public void setTotalDeliveries(int totalDeliveries) {
+	public void setTotalDeliveries(Integer totalDeliveries) {
 		this.totalDeliveries = totalDeliveries;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-	public double getLattitude() {
-		return lattitude;
-	}
-
-	public void setLattitude(double lattitude) {
-		this.lattitude = lattitude;
 	}
 
 }

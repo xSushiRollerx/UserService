@@ -42,9 +42,6 @@ class CustomerDaoTest {
 		assertDoesNotThrow(() -> (c1.save(new Customer(t))));
 		test1 = c1.save(new Customer(t));
 		assertNotNull(test1);
-		assertEquals(test1.isElderly(), false);
-		assertEquals(test1.isVeteran(), false);
-		assertEquals(test1.getLoyaltyPoints(), 0);
 
 		// update
 		test1.setLoyaltyPoints(5);

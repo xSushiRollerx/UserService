@@ -5,7 +5,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
@@ -30,34 +34,50 @@ class RegistrationControllerTest {
 	UserService userService;
 	@Autowired
 	MockMvc mockMvc;
+	@Autowired
+	ObjectMapper objectMapper;
 
 	@Test
 	void registrationTestOnSuccess() throws Exception {
+		UserDTO user = new UserDTO();
 		// let all these null values be valid, it returns a verification code
 		when(userService.registerOnValidation(Mockito.any(UserDTO.class)))
 				.thenReturn("21839y23823127heubs2");
-		// temporary for testing purposes
-		mockMvc.perform(post("/user").accept(MediaType.APPLICATION_JSON))
-				.andExpect(forwardedUrl("/helloworld2"));
+		mockMvc.perform(post("/users/user").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)))
+		.andExpect(status().isCreated());
 	}
 
 	@Test
 	void registrationTestOnFail() throws Exception {
+		UserDTO user = new UserDTO();
 		// user not registered
 		when(userService.registerOnValidation(Mockito.any(UserDTO.class)))
 				.thenReturn(null);
-		// temporary for testing purposes
-		mockMvc.perform(post("/user").accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().is(HttpServletResponse.SC_NOT_ACCEPTABLE));
+		mockMvc.perform(post("/users/user").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(user)))
+		.andExpect(status().is(HttpServletResponse.SC_NOT_ACCEPTABLE));
 	}
 
 	@Test
-	void resendLinkTest() throws Exception {
-		// user not registered
-		when(userService.resetVerificationCode(null)).thenReturn("code");
+	void resendLinkTestOnSuccess() throws Exception {
+		String email = null;
+		when(userService.resetVerificationCode("null")).thenReturn("code");
 		// temporary for testing purposes
-		mockMvc.perform(post("/verify").accept(MediaType.APPLICATION_JSON))
-		.andExpect(forwardedUrl("/helloworld2"));
+		mockMvc.perform(put("/users/verify").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(email)))
+		.andExpect(status().is(204));
+	}
+	
+	@Test
+	void resendLinkTestOnFail() throws Exception {
+		// user not registered
+		String email = null;
+		when(userService.resetVerificationCode("null")).thenReturn(null);
+		// temporary for testing purposes
+		mockMvc.perform(put("/users/verify").contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(email)))
+		.andExpect(status().isNotFound());
 	}
 	
 	@Test
@@ -65,7 +85,7 @@ class RegistrationControllerTest {
 		// verify a valid account
 		when(userService.verifyUserEmail(null)).thenReturn(true);
 		// temporary for testing purposes
-		mockMvc.perform(get("/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mockMvc.perform(get("/users/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -73,7 +93,7 @@ class RegistrationControllerTest {
 		// verify a valid account
 		when(userService.verifyUserEmail(null)).thenReturn(false);
 		// temporary for testing purposes
-		mockMvc.perform(get("/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/users/verify").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable());
 	}
 
 }

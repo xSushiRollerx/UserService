@@ -37,8 +37,6 @@ class DriverDaoTest {
 		assertDoesNotThrow(() -> (d1.save(new Driver(t))));
 		test1 = d1.save(new Driver(t));
 		assertNotNull(test1);
-		assertEquals(test1.getRating(), 0);
-		assertEquals(test1.getTotalDeliveries(), 0);
 
 		// update
 		test1.setRating(5);
