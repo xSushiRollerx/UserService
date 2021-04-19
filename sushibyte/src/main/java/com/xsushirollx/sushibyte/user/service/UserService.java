@@ -94,6 +94,7 @@ public class UserService {
 		if (pattern.matcher(email).matches()) {
 			return true;
 		}
+		log.debug("Email check failed");
 		return false;
 	}
 	
@@ -127,6 +128,7 @@ public class UserService {
 	 */
 	private boolean validateUsername(String username) {
 		if (username == null||username.equals("")) {
+			log.debug("Username check failed");
 			return false;
 		}
 		return true;
@@ -138,6 +140,7 @@ public class UserService {
 	 */
 	private boolean validatePhone(String phone) {
 		if (phone == null || phone.length() != 10) {
+			log.debug("Phone check failed");
 			return false;
 		}
 		for (char i : phone.toCharArray()) {
@@ -154,6 +157,7 @@ public class UserService {
 	private boolean validateName(String name) {
 		Pattern pattern = Pattern.compile("[0-9]");
 		if (name == null || pattern.matcher(name).find()) {
+			log.debug("Name check failed");
 			return false;
 		}
 		return true;
@@ -165,6 +169,7 @@ public class UserService {
 	 */
 	private boolean validatePassword(String password) {
 		if (password == null || password.length() < 6 || password.length() > 20) {
+			log.debug("Password check failed");
 			return false;
 		}
 		return true;
@@ -204,6 +209,11 @@ public class UserService {
 	public String resetVerificationCode(String email) {
 		User user = userDAO.findByEmail(email);
 		if (user==null) {
+			log.warn("Email not found");
+			return null;
+		}
+		if (user.isActive()) {
+			log.warn("User already active");
 			return null;
 		}
 		Verification verification = new Verification(user.getId());
@@ -243,13 +253,13 @@ public class UserService {
 	}
 
 	/**
-	 * @param id
+	 * @param userId
 	 * @return true if account has successfully been deactivated
 	 */
 	@Transactional
-	public boolean closeAccount(Integer id) {
-		if (userDAO.existsById(id)) {
-			User user = userDAO.findById(id).get();
+	public boolean closeAccount(String userId) {	
+		User user = userDAO.findByUsername(userId);
+		if (user!=null) {
 			user.setActive(false);
 			try {
 				userDAO.save(user);
@@ -260,7 +270,7 @@ public class UserService {
 			}
 			return true;
 		}
-		log.log(Level.INFO,"Id " + id + " does not exist in database");
+		log.log(Level.INFO,"Id " + userId + " does not exist in database");
 		return false;
 	}
 	
@@ -287,22 +297,23 @@ public class UserService {
 	}
 	
 	/**
-	 * @param id
+	 * @param userId
 	 * @param userD
 	 * @return true if account has successfully updated
 	 */
 	@Transactional
-	public boolean updateAccount(int id, UserDTO userD) {
+	public boolean updateAccount(String userId, UserDTO userD) {
 		if (!validatePassword(userD.getPassword())||
 				!validateName(userD.getFirstName())||
 				!validateName(userD.getLastName())||
 				!validateEmail(userD.getEmail())||
 				!validateUsername(userD.getUsername())||
 				!validatePhone(userD.getPhone())) {
+			log.warn("user fields not valid");
 			return false;
 		}
-		if (userDAO.existsById(id)) {
-			User user = userDAO.findById(id).get();
+		User user = userDAO.findByUsername(userId);
+		if (user!=null) {
 			user.setEmail(userD.getEmail());
 			user.setFirstName(userD.getFirstName());
 			user.setLastName(userD.getLastName());
@@ -317,13 +328,15 @@ public class UserService {
 			}
 			return true;
 		}
+		log.warn("User does not exist");
 		return false;
 	}
 	
-	public UserDTO getUserInfo(int id) {
-		if(userDAO.existsById(id)) {
-			User user = userDAO.findById(id).get();
+	public UserDTO getUserInfo(String username) {
+		User user = userDAO.findByUsername(username);
+		if (user!=null) {
 			UserDTO userD = new UserDTO();
+			userD.setUsername(user.getUsername());
 			userD.setEmail(user.getEmail());
 			userD.setFirstName(user.getFirstName());
 			userD.setLastName(user.getLastName());
@@ -336,17 +349,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public boolean updateAccountRole(Integer userId, Integer roleId) {
+	public boolean updateAccountRole(String userId, Integer roleId) {
 		// if new driver, create in driver repo
 		// if removing driver, set drive as inactive
+		User user = userDAO.findByUsername(userId);
+		if (user==null) {
+			log.log(Level.WARN,"User by id of {0} does not exist",userId);
+			return false;
+		}
 		try {
-			if (!userDAO.existsById(userId)) {
-				log.log(Level.INFO,"User by id of {0} does not exist",userId);
-				return false;
-			}
-			User user = userDAO.findById(userId).get();
 			if (user.getUserRole()==roleId) {
-				log.log(Level.INFO, "User by id of {0} already has role of {1}",userId,roleId);
+				log.log(Level.WARN, "User by id of {0} already has role of {1}",userId,roleId);
 				return false;
 			}
 			user.setUserRole(roleId);
@@ -354,16 +367,16 @@ public class UserService {
 			//driver check
 			if (roleId == 2) {
 				Driver driver;
-				if (driverDAO.existsById(userId)) {
+				if (driverDAO.existsById(user.getId())) {
 					//set active
-					driver=driverDAO.findById(userId).get();
+					driver=driverDAO.findById(user.getId()).get();
 					driver.setIsActive(true);
 					return true;
 				}
 				else {
 					//create driver
 					driver = new Driver();
-					driver.setId(userId);
+					driver.setId(user.getId());
 					driverDAO.save(driver);
 					return true;
 				}

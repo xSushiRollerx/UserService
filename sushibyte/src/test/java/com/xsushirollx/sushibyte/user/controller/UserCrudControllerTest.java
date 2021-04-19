@@ -36,7 +36,7 @@ class UserCrudControllerTest {
 	void updateTestOnSuccess() throws Exception {
 		UserDTO user = new UserDTO();
 		// verify a valid account
-		when(userService.updateAccount(Mockito.anyInt(),Mockito.any(UserDTO.class))).thenReturn(true);
+		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(true);
 		// temporary for testing purposes
 		mockMvc.perform(put("/users/user/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
@@ -48,7 +48,7 @@ class UserCrudControllerTest {
 	void updateTestOnFail() throws Exception {
 		UserDTO user = new UserDTO();
 		// verify a valid account
-		when(userService.updateAccount(Mockito.anyInt(),Mockito.any(UserDTO.class))).thenReturn(false);
+		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(false);
 		// temporary for testing purposes
 		mockMvc.perform(put("/users/user/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user)))
@@ -59,7 +59,7 @@ class UserCrudControllerTest {
 	void readTestOnSuccess() throws Exception {
 		UserDTO user = new UserDTO();
 		// verify a valid account
-		when(userService.getUserInfo(Mockito.anyInt())).thenReturn(user);
+		when(userService.getUserInfo(Mockito.anyString())).thenReturn(user);
 		// temporary for testing purposes
 		mockMvc.perform(get("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
@@ -67,7 +67,7 @@ class UserCrudControllerTest {
 	@Test
 	void readTestOnFail() throws Exception {
 		// verify a valid account
-		when(userService.getUserInfo(Mockito.anyInt())).thenReturn(null);
+		when(userService.getUserInfo(Mockito.anyString())).thenReturn(null);
 		// temporary for testing purposes
 		mockMvc.perform(get("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
 	}
@@ -75,7 +75,7 @@ class UserCrudControllerTest {
 	@Test
 	void deleteTestOnSuccess() throws Exception {
 		// verify a valid account
-		when(userService.closeAccount(Mockito.anyInt())).thenReturn(true);
+		when(userService.closeAccount(Mockito.anyString())).thenReturn(true);
 		// temporary for testing purposes
 		mockMvc.perform(delete("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
 	}
@@ -83,7 +83,7 @@ class UserCrudControllerTest {
 	@Test
 	void deleteTestOnFail() throws Exception {
 		// verify a valid account
-		when(userService.closeAccount(Mockito.anyInt())).thenReturn(false);
+		when(userService.closeAccount(Mockito.anyString())).thenReturn(false);
 		// temporary for testing purposes
 		mockMvc.perform(delete("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotModified());
 	}

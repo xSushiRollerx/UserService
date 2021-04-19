@@ -21,7 +21,7 @@ public class UserCrudController {
 	UserService userService;
 	
 	@DeleteMapping("/user/{userId}")
-	public ResponseEntity<String> deactivateUser(@PathVariable("userId") Integer userId){
+	public ResponseEntity<String> deactivateUser(@PathVariable("userId") String userId){
 		//get user id from jwt token
 //		Integer sessionId = 0;
 //		if (sessionId != userId) {
@@ -34,7 +34,7 @@ public class UserCrudController {
 	}
 	
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<UserDTO> readUser(@PathVariable("userId") Integer userId){
+	public ResponseEntity<UserDTO> readUser(@PathVariable("userId") String userId){
 		UserDTO user = userService.getUserInfo(userId);
 		if (user==null) {
 			return new ResponseEntity<UserDTO>(HttpStatus.NOT_FOUND);
@@ -43,7 +43,7 @@ public class UserCrudController {
 	}
 	
 	@PutMapping("/user/{userId}")
-	public ResponseEntity<String> updateUser(@PathVariable("userId") Integer userId, 
+	public ResponseEntity<String> updateUser(@PathVariable("userId") String userId, 
 			@RequestBody UserDTO userDTO){
 		//get user id from jwt token
 //		Integer sessionId = 0;

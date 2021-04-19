@@ -31,7 +31,7 @@ public class AdminController {
 	}
 	
 	@DeleteMapping("/user/{userId}")
-	public ResponseEntity<String> deactivateUser(@PathVariable("userId") Integer userId){
+	public ResponseEntity<String> deactivateUser(@PathVariable("userId") String userId){
 		if(userService.closeAccount(userId)) {
 			return new ResponseEntity<String>("Delete_successful",HttpStatus.valueOf(204));
 		}
@@ -39,7 +39,7 @@ public class AdminController {
 	}
 	
 	@PutMapping("/user/{userId}")
-	public ResponseEntity<String> updateUser(@PathVariable("userId") Integer userId, 
+	public ResponseEntity<String> updateUser(@PathVariable("userId") String userId, 
 			@RequestBody UserDTO userDTO){
 		if(userService.updateAccount(userId, userDTO)) {
 			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);
@@ -48,7 +48,7 @@ public class AdminController {
 	}
 	
 	@PutMapping("/user/{userId}/role")
-	public ResponseEntity<String> updateUserRole(@PathVariable("userId") Integer userId, 
+	public ResponseEntity<String> updateUserRole(@PathVariable("userId") String userId, 
 			@RequestBody Integer roleId){
 		if(userService.updateAccountRole(userId, roleId)) {
 			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);

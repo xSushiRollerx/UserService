@@ -1,3 +1,9 @@
+commit d75598f7034f2cb7affa8f8df8bb065334e56052
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Mon Apr 19 04:56:47 2021 -0700
+
+    all integration testing complete and passed for user crud operations and registration controllers
+
 commit 512b28ca3a688e0efb1372e0a9267dc0864175ce
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Fri Apr 16 11:29:16 2021 -0700

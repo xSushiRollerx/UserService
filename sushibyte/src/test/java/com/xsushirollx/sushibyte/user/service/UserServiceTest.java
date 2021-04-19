@@ -69,9 +69,8 @@ class UserServiceTest {
 	@Test
 	void closeAccountTest() {
 		Optional<User> user = Optional.of(new User());
-		when(userDAO.existsById(10)).thenReturn(true);
-		when(userDAO.findById(10)).thenReturn(user);
-		userService.closeAccount(10);
+		when(userDAO.findByUsername("10")).thenReturn(user.get());
+		userService.closeAccount("10");
 		assertEquals(false,user.get().isActive());		
 	}
 	
@@ -94,17 +93,15 @@ class UserServiceTest {
 		userD.setPassword("testing");
 		userD.setUsername("test");
 		userD.setPhone("1234567891");
-		when(userDAO.existsById(10)).thenReturn(true);
-		when(userDAO.findById(10)).thenReturn(user);
-		assertTrue(userService.updateAccount(10,userD));
+		when(userDAO.findByUsername("10")).thenReturn(user.get());
+		assertTrue(userService.updateAccount("10",userD));
 	}
 	
 	@Test
 	void getUsertInfoTest() {
-		Optional<User> user = Optional.of(new User());
-		when(userDAO.existsById(10)).thenReturn(true);
-		when(userDAO.findById(10)).thenReturn(user);
-		assertEquals(userService.getUserInfo(10).getClass(),UserDTO.class);
+		User user = new User();
+		when(userDAO.findByUsername("10")).thenReturn(user);
+		assertEquals(userService.getUserInfo("10").getClass(),UserDTO.class);
 	}
 	
 }

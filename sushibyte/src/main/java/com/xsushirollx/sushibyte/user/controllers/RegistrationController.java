@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
+import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
 /**
@@ -56,11 +57,13 @@ public class RegistrationController {
 	 */
 	@PutMapping(value = "/verify")
 	public ResponseEntity<String> resendVerificationCode(@RequestBody String email) {
+		log.warn(email);
 		String code = u1.resetVerificationCode(email);
 		if (code!=null) {
 			HttpHeaders header = new HttpHeaders();
 			header.add("location", "http://localhost:8080/mail");
-			return new ResponseEntity<String>(code, header, HttpStatus.valueOf(204));
+			header.add("code", code);
+			return new ResponseEntity<String>(code, header, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<String>("resend_fail", HttpStatus.NOT_FOUND);
 		}
@@ -76,6 +79,7 @@ public class RegistrationController {
 		if (verificationCode != null) {
 			HttpHeaders header = new HttpHeaders();
 			header.add("location", "http://localhost:8080/mail");
+			header.add("code", verificationCode);
 			return new ResponseEntity<String>(verificationCode, header, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("registration_fail", HttpStatus.NOT_ACCEPTABLE);
