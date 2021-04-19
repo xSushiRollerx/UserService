@@ -23,14 +23,14 @@ public class UserCrudController {
 	@DeleteMapping("/user/{userId}")
 	public ResponseEntity<String> deactivateUser(@PathVariable("userId") Integer userId){
 		//get user id from jwt token
-		Integer sessionId = 0;
-		if (sessionId != userId) {
-			return new ResponseEntity<String>("Delete_failed",HttpStatus.UNAUTHORIZED);
-		}
+//		Integer sessionId = 0;
+//		if (sessionId != userId) {
+//			return new ResponseEntity<String>("Delete_failed",HttpStatus.UNAUTHORIZED);
+//		}
 		if(userService.closeAccount(userId)) {
 			return new ResponseEntity<String>("Delete_successful",HttpStatus.valueOf(204));
 		}
-		return new ResponseEntity<String>("Delete_failed",HttpStatus.ACCEPTED);
+		return new ResponseEntity<String>("Delete_failed",HttpStatus.NOT_MODIFIED);
 	}
 	
 	@GetMapping("/user/{userId}")
@@ -46,12 +46,12 @@ public class UserCrudController {
 	public ResponseEntity<String> updateUser(@PathVariable("userId") Integer userId, 
 			@RequestBody UserDTO userDTO){
 		//get user id from jwt token
-		Integer sessionId = 0;
-		if (sessionId != userId) {
-			return new ResponseEntity<String>("Update_failed",HttpStatus.UNAUTHORIZED);
-		}
+//		Integer sessionId = 0;
+//		if (sessionId != userId) {
+//			return new ResponseEntity<String>("Update_failed",HttpStatus.UNAUTHORIZED);
+//		}
 		if(userService.updateAccount(userId, userDTO)) {
-			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);
+			return new ResponseEntity<String>("Update_successful",HttpStatus.NO_CONTENT);
 		}
 		return new ResponseEntity<String>("Update_failed",HttpStatus.NOT_MODIFIED);
 	}

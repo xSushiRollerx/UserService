@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,13 +54,13 @@ public class RegistrationController {
 	 * @param email
 	 * @return updates verification email
 	 */
-	@PutMapping("/verify")
+	@PutMapping(value = "/verify")
 	public ResponseEntity<String> resendVerificationCode(@RequestBody String email) {
 		String code = u1.resetVerificationCode(email);
 		if (code!=null) {
 			HttpHeaders header = new HttpHeaders();
 			header.add("location", "http://localhost:8080/mail");
-			return new ResponseEntity<String>(code, header, HttpStatus.valueOf(301));
+			return new ResponseEntity<String>(code, header, HttpStatus.valueOf(204));
 		} else {
 			return new ResponseEntity<String>("resend_fail", HttpStatus.NOT_FOUND);
 		}
@@ -75,7 +76,7 @@ public class RegistrationController {
 		if (verificationCode != null) {
 			HttpHeaders header = new HttpHeaders();
 			header.add("location", "http://localhost:8080/mail");
-			return new ResponseEntity<String>(verificationCode, header, HttpStatus.valueOf(301));
+			return new ResponseEntity<String>(verificationCode, header, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<String>("registration_fail", HttpStatus.NOT_ACCEPTABLE);
 		}

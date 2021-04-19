@@ -1,3 +1,9 @@
+commit 512b28ca3a688e0efb1372e0a9267dc0864175ce
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Fri Apr 16 11:29:16 2021 -0700
+
+    added admin controller
+
 commit a0d204584feac1ffffaf448b3a4909929b31bab4
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Thu Apr 15 11:33:42 2021 -0700
