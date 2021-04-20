@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xsushirollx.sushibyte.user.dto.DriverDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
@@ -54,6 +55,15 @@ public class AdminController {
 			return new ResponseEntity<String>("Update_successful",HttpStatus.ACCEPTED);
 		}
 		return new ResponseEntity<String>("Update_failed",HttpStatus.NOT_MODIFIED);
+	}
+	
+	@PutMapping("/driver/{driverId}")
+	public ResponseEntity<String> updateDriver(@PathVariable("driverId") String driverId,
+			@RequestBody DriverDTO driver){
+		if (userService.updateDriver(driver,driverId)) {
+			return new ResponseEntity<String>("Driver updated",HttpStatus.ACCEPTED);
+		}
+		return new ResponseEntity<String>("Driver not updated",HttpStatus.NOT_MODIFIED);
 	}
 	
 }

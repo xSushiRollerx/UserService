@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
+import com.xsushirollx.sushibyte.user.dto.DriverDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.Driver;
@@ -385,6 +386,77 @@ public class UserService {
 		catch(Exception e){
 			log.log(Level.WARN, e.getMessage());
 		}
+		return false;
+	}
+	
+	public boolean reactivateDriver(String username) {
+		User user = userDAO.findByUsername(username);
+		if (user!=null) {
+			Driver driver = driverDAO.findById(user.getId()).get();
+			if (driver!=null) {
+				if(!driver.getIsActive()) {
+					driver.setIsActive(true);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean deactivateDriver(String username) {
+		User user = userDAO.findByUsername(username);
+		if (user!=null) {
+			Driver driver = driverDAO.findById(user.getId()).get();
+			if (driver!=null) {
+				if(driver.getIsActive()) {
+					driver.setIsActive(false);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public DriverDTO readDriver(String username) {
+		User user = userDAO.findByUsername(username);
+		if (user!=null) {
+			Driver driver = driverDAO.findById(user.getId()).get();
+			if (driver!=null) {
+				DriverDTO driverDTO = new DriverDTO();
+				driverDTO.setFirstName(user.getFirstName());
+				driverDTO.setPhone(user.getPhone());
+				driverDTO.setRating(driver.getRating());
+				driverDTO.setTotalDeliveries(driver.getTotalDeliveries());
+				driverDTO.setUsername(username);
+				return driverDTO;
+			}
+		}
+		return null;
+	}
+	
+	@Transactional
+	public boolean updateDriver(DriverDTO updatedDriver, String username) {
+		User user = userDAO.findByUsername(username);
+		if (user!=null) {
+			Driver driver = driverDAO.findById(user.getId()).get();
+			if (driver!=null) {
+				user.setUsername(updatedDriver.getUsername());
+				user.setPassword(updatedDriver.getPassword());
+				user.setPhone(updatedDriver.getPhone());
+				driver.setRating(updatedDriver.getRating());
+				driver.setTotalDeliveries(updatedDriver.getTotalDeliveries());
+				try {
+					driverDAO.save(driver);
+					userDAO.save(user);
+					return true;
+				}
+				catch(Exception e) {
+					log.warn(e.getMessage());
+					return false;
+				}
+			}
+		}
+		log.warn("Driver {0} could not be updated",username);
 		return false;
 	}
 }
