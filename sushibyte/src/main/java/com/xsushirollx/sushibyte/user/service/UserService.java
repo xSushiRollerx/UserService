@@ -382,6 +382,9 @@ public class UserService {
 					return true;
 				}
 			}
+			else {
+				return true;
+			}
 		}
 		catch(Exception e){
 			log.log(Level.WARN, e.getMessage());
