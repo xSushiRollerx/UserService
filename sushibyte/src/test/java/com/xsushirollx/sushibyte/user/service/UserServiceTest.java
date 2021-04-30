@@ -10,13 +10,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.xsushirollx.sushibyte.user.dao.CustomerDAO;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
+import com.xsushirollx.sushibyte.user.dao.VerificationDAO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.entities.Verification;
-import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
-import com.xsushirollx.sushibyte.user.repositories.UserDAO;
-import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
 
 @SpringBootTest
 class UserServiceTest {

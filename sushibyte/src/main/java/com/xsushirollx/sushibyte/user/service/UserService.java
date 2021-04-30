@@ -10,17 +10,18 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.xsushirollx.sushibyte.user.configs.PasswordUtils;
+
+import com.xsushirollx.sushibyte.user.dao.CustomerDAO;
+import com.xsushirollx.sushibyte.user.dao.DriverDAO;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
+import com.xsushirollx.sushibyte.user.dao.VerificationDAO;
 import com.xsushirollx.sushibyte.user.dto.DriverDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.Driver;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.entities.Verification;
-import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
-import com.xsushirollx.sushibyte.user.repositories.DriverDAO;
-import com.xsushirollx.sushibyte.user.repositories.UserDAO;
-import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
+import com.xsushirollx.sushibyte.user.utils.PasswordUtils;
 
 /**
  * @author dyltr 
@@ -192,10 +193,10 @@ public class UserService {
 			return false;
 		}
 		User user = userDAO.findById(verification.getId()).get();
-		if (user.isActive()) {
+		if (user.isVerified()) {
 			return false;
 		}
-		user.setActive(true);
+		user.setVerified(true);
 		try{
 			userDAO.save(user);
 			verificationDAO.delete(verification);
@@ -213,7 +214,7 @@ public class UserService {
 			log.warn("Email not found");
 			return null;
 		}
-		if (user.isActive()) {
+		if (user.isVerified()) {
 			log.warn("User already active");
 			return null;
 		}
