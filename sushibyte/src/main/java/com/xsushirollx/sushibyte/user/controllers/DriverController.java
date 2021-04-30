@@ -29,7 +29,7 @@ public class DriverController {
 		if (userService.reactivateDriver(driverId)) {
 			return new ResponseEntity<String>("Driver reactivated",HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("Driver not reactivated",HttpStatus.NOT_FOUND);
+		return new ResponseEntity<String>("Driver not reactivated",HttpStatus.NOT_MODIFIED);
 	}
 	
 	@DeleteMapping("/driver/{driverId}")
@@ -37,7 +37,7 @@ public class DriverController {
 		if (userService.deactivateDriver(driverId)) {
 			return new ResponseEntity<String>("Driver deleted",HttpStatus.NO_CONTENT);
 		}
-		return new ResponseEntity<String>("Driver not deleted",HttpStatus.NOT_FOUND);
+		return new ResponseEntity<String>("Driver not deleted",HttpStatus.NOT_MODIFIED);
 	}
 	
 	@GetMapping("/driver/{driverId}")

@@ -61,7 +61,7 @@ class RegistrationControllerTest {
 		// temporary for testing purposes
 		mockMvc.perform(put("/users/verify").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(email)))
-		.andExpect(status().is(204));
+		.andExpect(status().is(200));
 	}
 	
 	@Test
