@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.user.repositories;
+package com.xsushirollx.sushibyte.user.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

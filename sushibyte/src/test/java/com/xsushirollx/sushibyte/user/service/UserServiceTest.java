@@ -10,13 +10,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+
+<<<<<<< HEAD
+import com.xsushirollx.sushibyte.user.dao.CustomerDAO;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
+import com.xsushirollx.sushibyte.user.dao.VerificationDAO;
+=======
+import com.xsushirollx.sushibyte.user.dto.DriverDTO;
+>>>>>>> 2020bb9adb48bf449ca36d105a9148e7a544d1c6
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
+import com.xsushirollx.sushibyte.user.entities.Driver;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.entities.Verification;
+<<<<<<< HEAD
+=======
 import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
+import com.xsushirollx.sushibyte.user.repositories.DriverDAO;
 import com.xsushirollx.sushibyte.user.repositories.UserDAO;
 import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
+>>>>>>> 2020bb9adb48bf449ca36d105a9148e7a544d1c6
 
 @SpringBootTest
 class UserServiceTest {
@@ -24,6 +37,8 @@ class UserServiceTest {
 	UserService userService;
 	@Mock
 	UserDAO userDAO;
+	@Mock
+	DriverDAO driverDAO;
 	@Mock
 	VerificationDAO verificationDAO;
 	@Mock
@@ -98,10 +113,56 @@ class UserServiceTest {
 	}
 	
 	@Test
+	void updateAccountRoleTest() {
+		Optional<User> user = Optional.of(new User());
+		user.get().setUserRole(1);
+		when(userDAO.findByUsername("10")).thenReturn(user.get());
+		assertTrue(userService.updateAccountRole("10", 3));
+		assertEquals(3, user.get().getUserRole());
+		assertTrue(userService.updateAccountRole("10", 2));
+		assertEquals(2, user.get().getUserRole());
+		assertTrue(userService.updateAccountRole("10", 1));
+		assertEquals(1, user.get().getUserRole());
+	}
+	
+	@Test
 	void getUsertInfoTest() {
 		User user = new User();
 		when(userDAO.findByUsername("10")).thenReturn(user);
 		assertEquals(userService.getUserInfo("10").getClass(),UserDTO.class);
+	}
+	
+	@Test
+	void readDriverTest( ) {
+		User user = new User();
+		user.setId(10);
+		when(userDAO.findByUsername("10")).thenReturn(user);
+		when(driverDAO.findById(10)).thenReturn(Optional.of(new Driver()));
+		assertEquals(userService.readDriver("10").getClass(),DriverDTO.class);
+	}
+	
+	@Test
+	void reactivateDriverTest( ) {
+		User user = new User();
+		user.setId(10);
+		when(userDAO.findByUsername("10")).thenReturn(user);
+		Driver driver = new Driver();
+		driver.setIsActive(false);
+		when(driverDAO.findById(10)).thenReturn(Optional.of(driver));
+		assertTrue(userService.reactivateDriver("10"));
+		assertFalse(userService.reactivateDriver("10"));
+	}
+	
+	@Test
+	void deactivateDriverTest( ) {
+		User user = new User();
+		user.setId(10);
+		when(userDAO.findByUsername("10")).thenReturn(user);
+		Driver driver = new Driver();
+		driver.setIsActive(true);
+		when(driverDAO.findById(10)).thenReturn(Optional.of(driver));
+		assertTrue(userService.deactivateDriver("10"));
+		assertFalse(userService.deactivateDriver("10"));
 	}
 	
 }

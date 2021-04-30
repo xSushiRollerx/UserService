@@ -1,4 +1,4 @@
-package com.xsushirollx.sushibyte.user.configs;
+package com.xsushirollx.sushibyte.user.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

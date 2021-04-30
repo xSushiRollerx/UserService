@@ -1,7 +1,6 @@
 package com.xsushirollx.sushibyte.user.entities;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,7 +35,15 @@ public class User {
 	private String password;
 	@Column(name = "user_role")
 	private int userRole;
+	@Column(name = "is_verified")
+	private boolean isVerified;
+	@Column(name = "is_active")
+	private boolean isActive;
+	
+	public User() {
 
+	}
+	
 	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
@@ -51,24 +58,6 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	@Column(name = "is_active")
-	private boolean isActive;
-
-	public User() {
-
-	}
-
-	public User(String firstName, String lastName, String phone, String email, String username, String password) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.email = email;
-		this.username = username;
-		this.password = password;
-		userRole=3;	//customer
-		createdAt = Timestamp.from(Instant.now());
 	}
 
 	public int getUserRole() {
@@ -127,6 +116,14 @@ public class User {
 		this.password = password;
 	}
 
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+	public void setVerified(boolean isVerified) {
+		this.isVerified = isVerified;
+	}
+	
 	public boolean isActive() {
 		return isActive;
 	}
