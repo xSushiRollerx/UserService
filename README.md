@@ -48,5 +48,3 @@ Controller:
       /user/{username}/role - PUT: updates user role
       /user/{username} - PUT: update user info
       /driver/{username} - DELETE: deactivate driver (May need to remove the reactivate account on driver side)
-
-
