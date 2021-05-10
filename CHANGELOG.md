@@ -1,14 +1,76 @@
+commit c2f176e69aa02d2880d2811d96e05f9d961b8372
+Author: damocles-coder <dylan.tran@smoothstack.com>
+Date:   Mon May 10 10:30:29 2021 -0700
+
+    Updated user update such that you dont need to fill out all of the fields.
+
+commit 0bdcc584b4cda12e33a023ee738bcda8949f8621
+Merge: 14d3d18 247c498
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 30 12:40:54 2021 -0700
+
+    Merge branch 'main' into dev
+
+commit 14d3d1826443dc9fc3d3436690189d39fbcc6173
+Merge: e8ae614 084e9e3
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 30 12:36:03 2021 -0700
+
+    Merge pull request #12 from xSushiRollerx/driver_crud_Dylan
+    
+    Driver crud dylan
+
+commit 084e9e312c1592be2b16bf0d22e2c594ea221ba2
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 30 12:34:45 2021 -0700
+
+    Update README.md
+
+commit 45da6fd5fe97dfc42362fca570934dab146c877c
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 30 12:31:34 2021 -0700
+
+    Update README.md
+
+commit cb1c0b2849c661029971e213255541c24a378bed
+Merge: 12e6c8a 2020bb9
+Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
+Date:   Fri Apr 30 12:24:04 2021 -0700
+
+    solved merge conflicts
+
 commit 12e6c8a50759a7ba49614be20394c1c974639340
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Fri Apr 30 12:19:30 2021 -0700
 
     forgot to push driver controller and testing
 
+commit 2020bb9adb48bf449ca36d105a9148e7a544d1c6
+Author: damocles-coder <dylan.tran@smoothstack.com>
+Date:   Fri Apr 23 22:42:10 2021 -0700
+
+    Doing a factory reset, storing all unsaved changes
+
+commit 5fb065cf0d1477792297333dbeed94a07acceec7
+Author: damocles-coder <dylan.tran@smoothstack.com>
+Date:   Fri Apr 23 11:10:50 2021 -0700
+
+    Completed integration/service testing for stories related to the driver controller and admin controller
+
 commit 035223f182ba9410b25a72ac4b38af41fe494854
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Tue Apr 20 11:46:10 2021 -0700
 
     Added driver crud implementation for service and controller layer. Also created Driver DTO and Mail DTO.
+
+commit e8ae614a8ca2f4ccc1bbe20eb5e22c657d67cb4f
+Merge: 1191a78 adb6814
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Mon Apr 19 11:21:36 2021 -0700
+
+    Merge pull request #10 from xSushiRollerx/user_crud_Dylan
+    
+    User crud dylan
 
 commit adb68146fb067d5af73d2639959e463c68c318cb
 Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
@@ -99,6 +161,36 @@ Author: Damocles-coder <35568707+dyltra@users.noreply.github.com>
 Date:   Mon Apr 5 14:23:23 2021 -0700
 
     got deletion of unverified users completed.
+
+commit 247c4982b8fcb854d93dcaff483a9a7b47b26f47
+Merge: ed6df1c 5cd9e85
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 2 12:17:28 2021 -0700
+
+    Merge pull request #7 from xSushiRollerx/staging
+    
+    added changelog
+
+commit 5cd9e85a51b137b12ddb5dc28853ceea4f972343
+Author: damocles-coder <dylan.tran@smoothstack.com>
+Date:   Fri Apr 2 12:16:11 2021 -0700
+
+    added changelog
+
+commit ed6df1c55850b356a5a906d495edd7ab17326ed5
+Merge: a4c7510 aea4d2b
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 2 12:08:08 2021 -0700
+
+    Merge pull request #6 from xSushiRollerx/staging
+    
+    Staging
+
+commit a4c7510dbc1f9823b1d4d047327fa8e9c59cfdd0
+Author: Damocles-coder <80295448+Damocles-coder@users.noreply.github.com>
+Date:   Fri Apr 2 15:02:16 2021 -0400
+
+    Update README.md
 
 commit aea4d2b9917226a81ea2a3129b049ccd6a62a5ef
 Merge: 5c994c6 9937af5

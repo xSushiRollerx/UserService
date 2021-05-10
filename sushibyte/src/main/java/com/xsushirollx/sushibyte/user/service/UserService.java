@@ -93,7 +93,7 @@ public class UserService {
 	public boolean validateEmail(String email) {
 		String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 		Pattern pattern = Pattern.compile(regex);
-		if (email!=null && pattern.matcher(email).matches()) {
+		if (email!=null && email.equals("")  && pattern.matcher(email).matches()) {
 			return true;
 		}
 		log.debug("Email check failed");
