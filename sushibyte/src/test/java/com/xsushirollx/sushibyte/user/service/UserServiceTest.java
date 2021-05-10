@@ -11,25 +11,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
-<<<<<<< HEAD
 import com.xsushirollx.sushibyte.user.dao.CustomerDAO;
+import com.xsushirollx.sushibyte.user.dao.DriverDAO;
 import com.xsushirollx.sushibyte.user.dao.UserDAO;
 import com.xsushirollx.sushibyte.user.dao.VerificationDAO;
-=======
 import com.xsushirollx.sushibyte.user.dto.DriverDTO;
->>>>>>> 2020bb9adb48bf449ca36d105a9148e7a544d1c6
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
 import com.xsushirollx.sushibyte.user.entities.Customer;
 import com.xsushirollx.sushibyte.user.entities.Driver;
 import com.xsushirollx.sushibyte.user.entities.User;
 import com.xsushirollx.sushibyte.user.entities.Verification;
-<<<<<<< HEAD
-=======
-import com.xsushirollx.sushibyte.user.repositories.CustomerDAO;
-import com.xsushirollx.sushibyte.user.repositories.DriverDAO;
-import com.xsushirollx.sushibyte.user.repositories.UserDAO;
-import com.xsushirollx.sushibyte.user.repositories.VerificationDAO;
->>>>>>> 2020bb9adb48bf449ca36d105a9148e7a544d1c6
 
 @SpringBootTest
 class UserServiceTest {

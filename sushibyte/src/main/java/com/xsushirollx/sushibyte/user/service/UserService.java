@@ -93,7 +93,7 @@ public class UserService {
 	public boolean validateEmail(String email) {
 		String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 		Pattern pattern = Pattern.compile(regex);
-		if (pattern.matcher(email).matches()) {
+		if (email!=null && pattern.matcher(email).matches()) {
 			return true;
 		}
 		log.debug("Email check failed");
@@ -141,7 +141,7 @@ public class UserService {
 	 * @return true if meets criteria and is unique
 	 */
 	private boolean validatePhone(String phone) {
-		if (phone == null || phone.length() != 10) {
+		if (phone == null || phone.equals("") || phone.length() != 10) {
 			log.debug("Phone check failed");
 			return false;
 		}
@@ -158,7 +158,7 @@ public class UserService {
 	 */
 	private boolean validateName(String name) {
 		Pattern pattern = Pattern.compile("[0-9]");
-		if (name == null || pattern.matcher(name).find()) {
+		if (name == null || name.equals("") || pattern.matcher(name).find()) {
 			log.debug("Name check failed");
 			return false;
 		}
@@ -299,28 +299,33 @@ public class UserService {
 	}
 	
 	/**
+	 * Change only those that are updated
 	 * @param userId
 	 * @param userD
 	 * @return true if account has successfully updated
 	 */
 	@Transactional
 	public boolean updateAccount(String userId, UserDTO userD) {
-		if (!validatePassword(userD.getPassword())||
-				!validateName(userD.getFirstName())||
-				!validateName(userD.getLastName())||
-				!validateEmail(userD.getEmail())||
-				!validateUsername(userD.getUsername())||
-				!validatePhone(userD.getPhone())) {
-			log.warn("user fields not valid");
-			return false;
-		}
 		User user = userDAO.findByUsername(userId);
 		if (user!=null) {
-			user.setEmail(userD.getEmail());
-			user.setFirstName(userD.getFirstName());
-			user.setLastName(userD.getLastName());
-			user.setPassword(PasswordUtils.generateSecurePassword(userD.getPassword()));
-			user.setPhone(userD.getPhone());
+			if(validateUsername(userD.getUsername())&&!checkUsernameExist(userD.getUsername())) {
+				user.setEmail(userD.getEmail());
+			}
+			if(validateEmail(userD.getEmail())&&!checkEmailExist(userD.getEmail())) {
+				user.setEmail(userD.getEmail());
+			}
+			if(validateName(userD.getFirstName())) {
+				user.setFirstName(userD.getFirstName());
+			}
+			if(validateName(userD.getLastName())) {
+				user.setLastName(userD.getLastName());
+			}
+			if(validateName(userD.getPassword())) {
+				user.setPassword(PasswordUtils.generateSecurePassword(userD.getPassword()));
+			}
+			if(validatePhone(userD.getPhone())&&!checkPhoneExist(userD.getPhone())) {
+				user.setPhone(userD.getPhone());
+			}
 			try {
 				userDAO.save(user);
 			}

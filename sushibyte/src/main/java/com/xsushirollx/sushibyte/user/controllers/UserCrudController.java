@@ -1,5 +1,7 @@
 package com.xsushirollx.sushibyte.user.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import com.xsushirollx.sushibyte.user.service.UserService;
 public class UserCrudController {
 	@Autowired
 	UserService userService;
+	static Logger log = LogManager.getLogger(UserCrudController.class.getName());
 	
 	@DeleteMapping("/user/{userId}")
 	public ResponseEntity<String> deactivateUser(@PathVariable("userId") String userId){
@@ -27,6 +30,7 @@ public class UserCrudController {
 //		if (sessionId != userId) {
 //			return new ResponseEntity<String>("Delete_failed",HttpStatus.UNAUTHORIZED);
 //		}
+		log.warn(userId);
 		if(userService.closeAccount(userId)) {
 			return new ResponseEntity<String>("Delete_successful",HttpStatus.valueOf(204));
 		}
