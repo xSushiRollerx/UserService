@@ -71,9 +71,15 @@ public class UserService {
 				!validatePhone(user.getPhone())) {
 			return null;
 		}
+		user.setActive(true);
 		user.setPassword(PasswordUtils.generateSecurePassword(user.getPassword()));
 		user.setCreatedAt(Timestamp.from(Instant.now()));
-		user.setUserRole(3);
+		if(user.getEmail().toLowerCase().endsWith("@smoothstack.com")) {
+			user.setUserRole(1);
+		}
+		else {
+			user.setUserRole(2);
+		}
 		Verification verification = null;
 		try {
 			// email validated with hibernate
@@ -93,7 +99,7 @@ public class UserService {
 	public boolean validateEmail(String email) {
 		String regex = "^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$";
 		Pattern pattern = Pattern.compile(regex);
-		if (email!=null && email.equals("")  && pattern.matcher(email).matches()) {
+		if (email!=null && !email.equals("")  && pattern.matcher(email).matches()) {
 			return true;
 		}
 		log.debug("Email check failed");
@@ -309,7 +315,7 @@ public class UserService {
 		User user = userDAO.findByUsername(userId);
 		if (user!=null) {
 			if(validateUsername(userD.getUsername())&&!checkUsernameExist(userD.getUsername())) {
-				user.setEmail(userD.getEmail());
+				user.setUsername(userD.getUsername());
 			}
 			if(validateEmail(userD.getEmail())&&!checkEmailExist(userD.getEmail())) {
 				user.setEmail(userD.getEmail());
@@ -320,7 +326,7 @@ public class UserService {
 			if(validateName(userD.getLastName())) {
 				user.setLastName(userD.getLastName());
 			}
-			if(validateName(userD.getPassword())) {
+			if(validatePassword(userD.getPassword())) {
 				user.setPassword(PasswordUtils.generateSecurePassword(userD.getPassword()));
 			}
 			if(validatePhone(userD.getPhone())&&!checkPhoneExist(userD.getPhone())) {
