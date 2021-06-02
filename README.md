@@ -18,3 +18,7 @@ Controller:
     /verify - sets account to active
     /register - passes fields to user service to register new user; redirects to /helloworld2 on success
     /helloworld2 - to be replaced in the future with mapping to node js service for sending out emails (send account verification link)
+
+## Jenkins Pipeline
+
+Test
