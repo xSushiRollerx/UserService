@@ -21,4 +21,4 @@ Controller:
 
 ## Jenkins Pipeline
 
-Test
+Currently configured at http://52.53.232.194:8080/
