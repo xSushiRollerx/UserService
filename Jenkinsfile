@@ -4,6 +4,7 @@ pipeline {
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
         maven "M3"
+        java "JAVA_HOME"
     }
 
     stages {
@@ -12,10 +13,10 @@ pipeline {
                 // Get some code from a GitHub repository
                 git 'https://github.com/xSushiRollerx/UserService.git'
                 // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+                sh "mvn clean package"
 
                 // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                // bat "mvn clean package"
             }
 
             post {
