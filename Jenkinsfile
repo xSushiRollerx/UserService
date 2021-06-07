@@ -9,8 +9,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+            cleanWs()
                 // Get some code from a GitHub repository
-                git 'https://github.com/xSushiRollerx/UserService.git'
                 // Run Maven on a Unix agent.
                 sh "mvn clean package"
 
