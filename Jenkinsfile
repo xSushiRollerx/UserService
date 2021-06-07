@@ -17,6 +17,14 @@ pipeline {
             }
                     
             post {
+            	always {
+		    cleanWs(cleanWhenNotBuilt: false,
+	            deleteDirs: true,
+	            disableDeferredWipeout: true,
+	            notFailBuild: true,
+	            patterns: [[pattern: '.gitignore', type: 'INCLUDE'],
+	                       [pattern: '.propsfile', type: 'EXCLUDE']])
+		}
                 // If Maven was able to run the tests, even if some of the test
                 // failed, record the test results and archive the jar file.
                 success {
