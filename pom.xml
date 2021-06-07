@@ -11,7 +11,7 @@
 	<groupId>com.xsushirollx</groupId>
 	<artifactId>sushibyte</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>sushibyte</name>
 	<description>Smoothstack Agile Project</description>
 	<properties>
