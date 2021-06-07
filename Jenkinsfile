@@ -12,12 +12,13 @@ pipeline {
                 // Get some code from a GitHub repository
                 git 'https://github.com/xSushiRollerx/UserService.git'
                 // Project is not located at git root
-                sh "cd sushibyte"
+                dir("sushibyte"){
                 // Run Maven on a Unix agent.
                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
 
                 // To run Maven on a Windows agent, use
                 // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+                }
             }
 
             post {
