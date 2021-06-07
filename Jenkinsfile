@@ -28,22 +28,5 @@ pipeline {
                 }
             }
         }
-        stage('Package') {
-            steps {
-                //build docker image grom created artifact and store
-                sh "sudo docker build . -t dyltra/user-service"
-                sh "sudo docker push dyltra/user-service"
-            }
-        }
-        stage('Deploy') {
-            steps {
-                //remove previous version
-                sh "sudo docker stop user-service-container"
-                sh "sudo docker rm user-service-container"
-                sh "sudo docker rmi dyltra/user_service:latest"
-                sh "sudo docker run -p 8080:8080 dyltra/user_service:latest -t user=service-container"
-                
-            }
-        }
     }
 }
