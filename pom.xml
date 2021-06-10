@@ -9,8 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.xsushirollx</groupId>
-	<artifactId>sushibyte</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>user-service</artifactId>
 	<packaging>jar</packaging>
 	<name>sushibyte</name>
 	<description>Smoothstack Agile Project</description>
