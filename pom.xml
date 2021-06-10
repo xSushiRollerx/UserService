@@ -10,6 +10,7 @@
 	</parent>
 	<groupId>com.xsushirollx</groupId>
 	<artifactId>user-service</artifactId>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>sushibyte</name>
 	<description>Smoothstack Agile Project</description>
