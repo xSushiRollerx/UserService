@@ -42,7 +42,7 @@ pipeline {
                 sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
                 sh "docker tag ${IMG_NAME}:${COMMIT_HASH} 635496629433.dkr.ecr.us-west-1.amazonaws.com/user-service:${COMMIT_HASH}"
                 echo "Docker Push..."
-                sh "docker push 635496629433.dkr.ecr.us-west-1.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"git
+                sh "docker push 635496629433.dkr.ecr.us-west-1.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"
             }
         }
         // stage("Deploy") {
