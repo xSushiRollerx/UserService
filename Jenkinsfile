@@ -45,14 +45,15 @@ pipeline {
                 sh "docker push 635496629433.dkr.ecr.us-west-1.amazonaws.com/${IMG_NAME}:${COMMIT_HASH}"
             }
         }
-        // stage("Deploy") {
-        //     steps {
-        //         echo "Fetching cloud cloudformation template.."
-        //         sh "wget https://raw.githubusercontent.com/Aline-Financial/aline-usermicroservice/dev/ecs-aws.yaml"
-        //         echo "Deploying cloudformation.."
-        //         sh "aws cloudformation deploy --stack-name UserMsStack --template-file ./ecs-aws.yaml --parameter-overrides PortNumber=8070 ListenerArn=arn:aws:elasticloadbalancing:us-east-2:170505770705:listener/app/Aline-Private-LB/38a8e6d26b981100/a4866b14508da3b5 ApplicationName=${IMG_NAME} CommitHash=${COMMIT_HASH} ApplicationEnvironment=dev --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-east-2"
-        //     }
-        // }
+        stage("Deploy") {
+            steps {
+                echo "Deploying cloudformation.."
+                sh "aws cloudformation deploy --stack-name UserMsStack --template-file ./ecs.yaml --parameter-overrides 
+                PortNumber=8080 ListenerArn=arn:aws:elasticloadbalancing:us-east-2:170505770705:listener/app/Aline-Private-LB/38a8e6d26b981100/a4866b14508da3b5 
+                ApplicationName=${IMG_NAME} CommitHash=${COMMIT_HASH} ApplicationEnvironment=dev 
+                --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-west-1"
+            }
+        }
     }
     post {
         always {
