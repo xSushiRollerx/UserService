@@ -55,7 +55,7 @@ pipeline {
 //                 ApplicationName=${IMG_NAME} CommitHash=${COMMIT_HASH} ApplicationEnvironment=dev 
 //                 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-west-1"
 //             }
-        }
+//        }
     }
     post {
         always {
