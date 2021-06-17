@@ -4,7 +4,7 @@ pipeline {
         COMMIT_HASH = "${sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()}"
         IMG_NAME = "user-service"
         AWS_ID = credentials('aws-id')
-        AWS_ID = credentials('aws-id')
+        REPO_URL = credentials('service-user')
     }
 
     tools {
