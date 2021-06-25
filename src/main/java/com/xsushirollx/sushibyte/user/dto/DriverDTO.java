@@ -35,14 +35,8 @@ public class DriverDTO {
 	public Integer getRating() {
 		return rating;
 	}
-	public void setRating(Integer rating) {
-		this.rating = rating;
-	}
 	public Integer getTotalDeliveries() {
 		return totalDeliveries;
-	}
-	public void setTotalDeliveries(Integer totalDeliveries) {
-		this.totalDeliveries = totalDeliveries;
 	}
 	
 }

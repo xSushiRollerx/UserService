@@ -440,8 +440,6 @@ public class UserService {
 				DriverDTO driverDTO = new DriverDTO();
 				driverDTO.setFirstName(user.getFirstName());
 				driverDTO.setPhone(user.getPhone());
-				driverDTO.setRating(driver.getRating());
-				driverDTO.setTotalDeliveries(driver.getTotalDeliveries());
 				driverDTO.setUsername(username);
 				return driverDTO;
 			}
