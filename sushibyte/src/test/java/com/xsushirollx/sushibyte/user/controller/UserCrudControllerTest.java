@@ -5,6 +5,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
+import com.xsushirollx.sushibyte.user.entities.User;
+import com.xsushirollx.sushibyte.user.security.JWTUtil;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
 /**
@@ -31,6 +37,10 @@ class UserCrudControllerTest {
 	MockMvc mockMvc;
 	@Autowired
 	ObjectMapper objectMapper;
+	@Autowired
+	JWTUtil util;
+	@MockBean
+	UserDAO udao;
 	
 	@Test
 	void updateTestOnSuccess() throws Exception {
@@ -38,7 +48,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(true);
 		// temporary for testing purposes
-		mockMvc.perform(put("/users/user/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/users/user/96").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNoContent());
 		
@@ -50,7 +62,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(false);
 		// temporary for testing purposes
-		mockMvc.perform(put("/users/user/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/users/user/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNotModified());
 	}
@@ -61,7 +75,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.getUserInfo(Mockito.anyString())).thenReturn(user);
 		// temporary for testing purposes
-		mockMvc.perform(get("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(get("/users/user/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -69,7 +85,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.getUserInfo(Mockito.anyString())).thenReturn(null);
 		// temporary for testing purposes
-		mockMvc.perform(get("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(get("/users/user/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNotFound());
 	}
 	
 	@Test
@@ -77,7 +95,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.closeAccount(Mockito.anyString())).thenReturn(true);
 		// temporary for testing purposes
-		mockMvc.perform(delete("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/users/user/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -85,7 +105,9 @@ class UserCrudControllerTest {
 		// verify a valid account
 		when(userService.closeAccount(Mockito.anyString())).thenReturn(false);
 		// temporary for testing purposes
-		mockMvc.perform(delete("/users/user/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotModified());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(45, 1)));
+		String token = "Bearer " + util.generateToken("45");
+		mockMvc.perform(delete("/users/user/45").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNotModified());
 	}
 
 }

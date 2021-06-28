@@ -3,6 +3,7 @@ package com.xsushirollx.sushibyte.user.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ public class DriverController {
 	@Autowired
 	UserService userService;
 	
+	@PreAuthorize(value = "hasAuthority('DRIVER') and (#driverId == (principal.id).toString()) ")
 	@PostMapping("/driver/{driverId}")
 	public ResponseEntity<String> reactivateDriver(@PathVariable("driverId") String driverId){
 		if (userService.reactivateDriver(driverId)) {
@@ -32,6 +34,7 @@ public class DriverController {
 		return new ResponseEntity<String>("Driver not reactivated",HttpStatus.NOT_MODIFIED);
 	}
 	
+	@PreAuthorize(value = "hasAuthority('DRIVER') and (#driverId == (principal.id).toString()) ")
 	@DeleteMapping("/driver/{driverId}")
 	public ResponseEntity<String> deactivateDriver(@PathVariable("driverId") String driverId){
 		if (userService.deactivateDriver(driverId)) {
@@ -40,11 +43,12 @@ public class DriverController {
 		return new ResponseEntity<String>("Driver not deleted",HttpStatus.NOT_MODIFIED);
 	}
 	
+	@PreAuthorize(value = "hasAuthority('DRIVER') and (#driverId == (principal.id).toString()) ")
 	@GetMapping("/driver/{driverId}")
 	public ResponseEntity<DriverDTO> readDriverInfo(@PathVariable("driverId") String driverId){
 		DriverDTO driver = userService.readDriver(driverId);
 		if (driver!=null) {
-			return new ResponseEntity<DriverDTO>(driver,HttpStatus.OK);
+			return new ResponseEntity<DriverDTO>(driver, HttpStatus.OK);
 		}
 		return new ResponseEntity<DriverDTO>(HttpStatus.NOT_FOUND);
 	}

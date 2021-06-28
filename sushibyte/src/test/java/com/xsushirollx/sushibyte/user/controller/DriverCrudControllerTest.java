@@ -1,11 +1,12 @@
 package com.xsushirollx.sushibyte.user.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,7 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
 import com.xsushirollx.sushibyte.user.dto.DriverDTO;
+import com.xsushirollx.sushibyte.user.entities.User;
+import com.xsushirollx.sushibyte.user.security.JWTUtil;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
 /**
@@ -33,48 +37,64 @@ class DriverCrudControllerTest {
 	MockMvc mockMvc;
 	@Autowired
 	ObjectMapper objectMapper;
+	@Autowired
+	JWTUtil util;
+	@MockBean
+	UserDAO udao;
 	
 	@Test
 	void driverReadTest_on_success() throws Exception {
 		DriverDTO user = new DriverDTO();
 		// read a valid account
 		when(userService.readDriver(Mockito.anyString())).thenReturn(user);
-		mockMvc.perform(get("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(get("/users/driver/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isOk());
 	}
 	
 	@Test
 	void driverReadTest_on_fail() throws Exception {
 		// read an invalid account
 		when(userService.readDriver(Mockito.anyString())).thenReturn(null);
-		mockMvc.perform(get("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(get("/users/driver/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNotFound());
 	}
 	
 	@Test
 	void driverRectivateTest_on_success() throws Exception {
 		// reactivate a valid account
 		when(userService.reactivateDriver(Mockito.anyString())).thenReturn(true);
-		mockMvc.perform(post("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(post("/users/driver/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isCreated());
 	}
 	
 	@Test
 	void driverReactivateTest_on_fail() throws Exception {
 		// reactivate an invalid account
 		when(userService.reactivateDriver(Mockito.anyString())).thenReturn(false);
-		mockMvc.perform(post("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotModified());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(97, 3)));
+		String token = "Bearer " + util.generateToken("97");
+		mockMvc.perform(post("/users/driver/97").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNotModified());
 	}
 	
 	@Test
 	void driverDeactivateTest_on_success() throws Exception {
 		// deactivate an invalid account
 		when(userService.deactivateDriver(Mockito.anyString())).thenReturn(true);
-		mockMvc.perform(delete("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/users/driver/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNoContent());
 	}
 	
 	@Test
 	void driverDeactivateTest_on_fail() throws Exception {
 		// deactivate an invalid account
 		when(userService.deactivateDriver(Mockito.anyString())).thenReturn(false);
-		mockMvc.perform(delete("/users/driver/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNotModified());
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 3)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/users/driver/96").accept(MediaType.APPLICATION_JSON).header("Authorization", token)).andExpect(status().isNotModified());
 	}
 
 }

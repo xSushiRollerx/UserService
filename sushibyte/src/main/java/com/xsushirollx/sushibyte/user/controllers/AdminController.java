@@ -3,8 +3,8 @@ package com.xsushirollx.sushibyte.user.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +23,8 @@ import com.xsushirollx.sushibyte.user.service.UserService;
 public class AdminController {
 	@Autowired
 	UserService userService;
-
+	
+	@PreAuthorize(value = "hasAuthority('ADMINISTRATOR')")
 	@DeleteMapping("/user/{userId}")
 	public ResponseEntity<String> deactivateUser(@PathVariable("userId") String userId) {
 		if (userService.closeAccount(userId)) {
@@ -32,6 +33,7 @@ public class AdminController {
 		return new ResponseEntity<String>("Delete_failed", HttpStatus.NOT_MODIFIED);
 	}
 	
+	@PreAuthorize(value = "hasAuthority('ADMINISTRATOR')")
 	@DeleteMapping("/driver/{userId}")
 	public ResponseEntity<String> deactivateDriver(@PathVariable("userId") String userId) {
 		if (userService.deactivateDriver(userId)) {
@@ -40,6 +42,7 @@ public class AdminController {
 		return new ResponseEntity<String>("Delete_failed", HttpStatus.NOT_MODIFIED);
 	}
 
+	@PreAuthorize(value = "hasAuthority('ADMINISTRATOR')")
 	@PutMapping("/user/{userId}")
 	public ResponseEntity<String> updateUser(@PathVariable("userId") String userId, @RequestBody UserDTO userDTO) {
 		if (userService.updateAccount(userId, userDTO)) {
@@ -48,6 +51,7 @@ public class AdminController {
 		return new ResponseEntity<String>("Update_failed", HttpStatus.NOT_MODIFIED);
 	}
 
+	@PreAuthorize(value = "hasAuthority('ADMINISTRATOR')")
 	@PutMapping("/user/{userId}/role")
 	public ResponseEntity<String> updateUserRole(@PathVariable("userId") String userId, @RequestBody Integer roleId) {
 		if (userService.updateAccountRole(userId, roleId)) {
@@ -56,6 +60,7 @@ public class AdminController {
 		return new ResponseEntity<String>("Update_failed", HttpStatus.NOT_MODIFIED);
 	}
 
+	@PreAuthorize(value = "hasAuthority('ADMINISTRATOR')")
 	@PutMapping("/driver/{driverId}")
 	public ResponseEntity<String> updateDriver(@PathVariable("driverId") String driverId,
 			@RequestBody DriverDTO driver) {
