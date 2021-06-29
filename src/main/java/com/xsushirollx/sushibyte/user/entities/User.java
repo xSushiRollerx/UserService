@@ -44,6 +44,11 @@ public class User {
 
 	}
 	
+	public User(int id, int userRole) {
+		this.id  = id;
+		this.userRole = userRole;
+	}
+
 	public Timestamp getCreatedAt() {
 		return createdAt;
 	}
@@ -130,6 +135,11 @@ public class User {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", role=" + userRole + "]";
 	}
 
 }
