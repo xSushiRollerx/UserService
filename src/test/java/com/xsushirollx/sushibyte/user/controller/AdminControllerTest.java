@@ -1,10 +1,11 @@
 package com.xsushirollx.sushibyte.user.controller;
 
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,8 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xsushirollx.sushibyte.user.dao.UserDAO;
 import com.xsushirollx.sushibyte.user.dto.DriverDTO;
 import com.xsushirollx.sushibyte.user.dto.UserDTO;
+import com.xsushirollx.sushibyte.user.entities.User;
+import com.xsushirollx.sushibyte.user.security.JWTUtil;
 import com.xsushirollx.sushibyte.user.service.UserService;
 
 /**
@@ -34,12 +38,18 @@ public class AdminControllerTest {
 	MockMvc mockMvc;
 	@Autowired
 	ObjectMapper objectMapper;
-
+	@Autowired
+	JWTUtil util;
+	@MockBean
+	UserDAO udao;
+	
 	@Test
 	void roleUpdateTest_on_success() throws JsonProcessingException, Exception {
 		//change role of valid account
 		when(userService.updateAccountRole(Mockito.anyString(),Mockito.anyInt())).thenReturn(true);
-		mockMvc.perform(put("/admins/user/1/role").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/user/1/role").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(new Integer(3))))
 		.andExpect(status().isNoContent());
 	}
@@ -48,7 +58,9 @@ public class AdminControllerTest {
 	void roleUpdate_on_fail() throws JsonProcessingException, Exception {
 		//change role of valid account
 		when(userService.updateAccountRole(Mockito.anyString(),Mockito.anyInt())).thenReturn(false);
-		mockMvc.perform(put("/admins/user/1/role").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/user/1/role").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(new Integer(3))))
 		.andExpect(status().isNotModified());
 	}
@@ -58,7 +70,9 @@ public class AdminControllerTest {
 		DriverDTO user = new DriverDTO();
 		// update an invalid account
 		when(userService.updateDriver(Mockito.any(DriverDTO.class),Mockito.anyString())).thenReturn(true);
-		mockMvc.perform(put("/admins/driver/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/driver/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNoContent());
 	}
@@ -68,7 +82,9 @@ public class AdminControllerTest {
 		DriverDTO user = new DriverDTO();
 		// update an invalid account
 		when(userService.updateDriver(Mockito.any(DriverDTO.class),Mockito.anyString())).thenReturn(false);
-		mockMvc.perform(put("/admins/driver/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/driver/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNotModified());
 	}
@@ -77,7 +93,9 @@ public class AdminControllerTest {
 	void userDeactivateTest_on_success() throws Exception {
 		// delete a valid account
 		when(userService.closeAccount(Mockito.anyString())).thenReturn(true);
-		mockMvc.perform(delete("/admins/user/1").accept(MediaType.APPLICATION_JSON))
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/admins/user/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token))
 		.andExpect(status().isNoContent());
 	}
 	
@@ -85,7 +103,9 @@ public class AdminControllerTest {
 	void userDeactivateTest_on_fail() throws Exception {
 		// delete a valid account
 		when(userService.closeAccount(Mockito.anyString())).thenReturn(false);
-		mockMvc.perform(delete("/admins/user/1").accept(MediaType.APPLICATION_JSON))
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/admins/user/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token))
 		.andExpect(status().isNotModified());
 	}
 	
@@ -93,7 +113,9 @@ public class AdminControllerTest {
 	void driverDeactivateTest_on_success() throws Exception {
 		// delete a valid account
 		when(userService.deactivateDriver(Mockito.anyString())).thenReturn(true);
-		mockMvc.perform(delete("/admins/driver/1").accept(MediaType.APPLICATION_JSON))
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/admins/driver/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token))
 		.andExpect(status().isNoContent());
 	}
 	
@@ -101,7 +123,9 @@ public class AdminControllerTest {
 	void driverDeactivateTest_on_fail() throws Exception {
 		// delete a valid account
 		when(userService.deactivateDriver(Mockito.anyString())).thenReturn(false);
-		mockMvc.perform(delete("/admins/driver/1").accept(MediaType.APPLICATION_JSON))
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(delete("/admins/driver/1").accept(MediaType.APPLICATION_JSON).header("Authorization", token))
 		.andExpect(status().isNotModified());
 	}
 	
@@ -110,7 +134,9 @@ public class AdminControllerTest {
 		UserDTO user = new UserDTO();
 		// update a valid account
 		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(true);
-		mockMvc.perform(put("/admins/user/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/user/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNoContent());
 	}
@@ -120,7 +146,9 @@ public class AdminControllerTest {
 		UserDTO user = new UserDTO();
 		// update an invalid account
 		when(userService.updateAccount(Mockito.anyString(),Mockito.any(UserDTO.class))).thenReturn(false);
-		mockMvc.perform(put("/admins/user/1").contentType(MediaType.APPLICATION_JSON)
+		when(udao.findById(Mockito.anyInt())).thenReturn(Optional.of(new User(96, 2)));
+		String token = "Bearer " + util.generateToken("96");
+		mockMvc.perform(put("/admins/user/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", token)
 				.content(objectMapper.writeValueAsString(user)))
 		.andExpect(status().isNotModified());
 	}
