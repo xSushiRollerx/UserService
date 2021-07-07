@@ -40,7 +40,7 @@ pipeline {
         stage("Docker Build") {
             steps {
                 echo "Docker Build...."
-                sh "docker login -u AWS -p $(aws ecr get-login-password --region us-west-1) ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com"
+                sh "docker login -u AWS -p \$(aws ecr get-login-password --region us-west-1) ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com"
                 //sh 'aws ecr get-login-password --no-include-email --region us-west-1 | docker login --username AWS --password-stdin ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com'
                 echo "$AWS_ID"
                 sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
