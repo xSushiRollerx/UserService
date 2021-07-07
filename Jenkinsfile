@@ -50,9 +50,7 @@ pipeline {
         stage("Deploy") {
             steps {
                 echo "Deploying cloudformation.."
-                sh "aws cloudformation deploy --stack-name UserMsStack --template-file ./ecs.yaml --parameter-overrides "+
-                "ApplicationName=${IMG_NAME} ApplicationEnvironment=dev ECRRepositoryUri=635496629433.dkr.ecr.us-west-1.amazonaws.com/user-service "+
-                "--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-west-1"
+                sh "aws cloudformation deploy --stack-name UserMsStack --template-file ./ecs.yaml --parameter-overrides ApplicationName=${IMG_NAME} ApplicationEnvironment=dev ECRRepositoryUri=635496629433.dkr.ecr.us-west-1.amazonaws.com/user-service --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-west-1"
             }
         }
     }
