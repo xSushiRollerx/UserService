@@ -15,7 +15,6 @@ pipeline {
     stages {
         stage('Clean target') {
             steps {
-                sh "awsv2 --version"
                 sh 'mvn clean'
             }
         }
