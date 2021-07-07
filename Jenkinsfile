@@ -51,8 +51,7 @@ pipeline {
             steps {
                 echo "Deploying cloudformation.."
                 sh "aws cloudformation deploy --stack-name UserMsStack --template-file ./ecs.yaml --parameter-overrides "+
-                "PortNumber=8080 ListenerArn=arn:aws:elasticloadbalancing:us-east-2:170505770705:listener/app/sushibyte-lb/38a8e6d26b981100/a4866b14508da3b5 "+
-                "ApplicationName=${IMG_NAME} CommitHash=${COMMIT_HASH} ApplicationEnvironment=dev "+
+                "ApplicationName=${IMG_NAME} ApplicationEnvironment=dev ECRRepositoryUri=635496629433.dkr.ecr.us-west-1.amazonaws.com/user-service "+
                 "--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --region us-west-1"
             }
         }
