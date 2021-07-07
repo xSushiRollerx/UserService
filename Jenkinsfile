@@ -16,6 +16,7 @@ pipeline {
         stage('Clean target') {
             steps {
                 echo "$AWS_ID"
+                sh "aws --version"
                 sh 'mvn clean'
             }
         }
