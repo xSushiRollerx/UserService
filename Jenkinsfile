@@ -15,6 +15,7 @@ pipeline {
     stages {
         stage('Clean target') {
             steps {
+                sh "aws --version"
                 sh "awsv2 --version"
                 sh 'mvn clean'
             }
