@@ -41,7 +41,7 @@ pipeline {
             steps {
                 echo "Docker Build...."
                 //sh "docker login -u AWS --password-stdin \$(aws ecr get-login-password --region us-west-1) ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com"
-                sh 'awsv2 ecr get-login-password --no-include-email --region us-west-1 | docker login --username AWS --password-stdin ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com'
+                sh 'awsv2 ecr get-login-password --no-include-email --region us-west-1 | docker login --username AWS --password-stdin 635496629433.dkr.ecr.us-west-1.amazonaws.com'
                 sh "docker build --tag ${IMG_NAME}:${COMMIT_HASH} ."
                 sh 'docker tag ${IMG_NAME}:${COMMIT_HASH} ${AWS_ID}.dkr.ecr.us-west-1.amazonaws.com/${REPO_URL}:${COMMIT_HASH}'
                 echo "Docker Push..."
