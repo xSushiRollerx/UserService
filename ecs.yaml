@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: ECS Base Template
-​
+
 Parameters:
   ApplicationEnvironment:
     Type: String
@@ -10,8 +10,9 @@ Parameters:
   ECRRepositoryUri:
     Type: String
     Description: Full Uri for consumer docker image to run in container
-​
+    
 Resources:
+
   # Role for ECS container
   ContainerExecutionRole:
     Type: AWS::IAM::Role
@@ -31,7 +32,7 @@ Resources:
             Value: !Ref ApplicationName
           - Key: ApplicationEnvironment
             Value: !Ref ApplicationEnvironment
-​
+
   # Fargate ECS Service
   MicroService:
     Type: AWS::ECS::Service
@@ -50,13 +51,14 @@ Resources:
           AssignPublicIp: ENABLED
           Subnets:
             - !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:Private-Subnet-A}}'
+            #- !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/Secret-Name:SecretString:Private-Subnet-B}}'
           SecurityGroups:
             - !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:Base-SecGroup}}'
       LoadBalancers:
         - ContainerName: !Ref ApplicationName
           ContainerPort: 8080
           TargetGroupArn: !Ref TargetGroup
-​
+
   # Fargate Task Definition
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -105,7 +107,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
               awslogs-create-group: 'true'
-​
+
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -123,7 +125,7 @@ Resources:
           Value: '60'
       TargetType: ip
       VpcId: !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/networking:SecretString:vpc-id}}'
-​
+
   ApiListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
