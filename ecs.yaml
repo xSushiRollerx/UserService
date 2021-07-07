@@ -50,7 +50,6 @@ Resources:
           AssignPublicIp: ENABLED
           Subnets:
             - !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:Private-Subnet-A}}'
-            #- !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/Secret-Name:SecretString:Private-Subnet-B}}'
           SecurityGroups:
             - !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:Base-SecGroup}}'
       LoadBalancers:
