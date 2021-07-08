@@ -124,7 +124,7 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: '60'
       TargetType: ip
-      VpcId: !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/networking:SecretString:vpc-id}}'
+      VpcId: !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:vpc-id}}'
 
   ApiListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -137,5 +137,5 @@ Resources:
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
-      ListenerArn: !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/networking:SecretString:listener-arn}}'
+      ListenerArn: !Sub '{{resolve:secretsmanager:Sushibyte/${ApplicationEnvironment}/${ApplicationName}:SecretString:listener-arn}}'
       Priority: 10
