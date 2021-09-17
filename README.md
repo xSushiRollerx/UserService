@@ -4,7 +4,7 @@ This repository contains solely the microservice pertaining to the users.
 
 It consists of relating entities, daos, services and controller which will be explained below.
 
-Entity: 
+Entity:
 
     User - general user object that contains personal info and account information
     Customer - Users with specific role will have additional information stored  
